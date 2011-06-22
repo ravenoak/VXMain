@@ -60,3 +60,5 @@ def init_model(engine):
 
 # Import your model modules here.
 from VXMain.model.auth import User, Group, Permission
+from VXMain.model.page import Page, Tag, Category, PageTags, PageCategories
+from VXMain.model.project import Project, ProjectPages

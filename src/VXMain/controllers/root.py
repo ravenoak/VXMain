@@ -9,6 +9,8 @@ from repoze.what import predicates
 
 from VXMain.lib.base import BaseController
 from VXMain.model import DBSession, metadata
+from VXMain.model.page import *
+from VXMain.model.project import *
 from VXMain import model
 from VXMain.controllers.secure import SecureController
 
@@ -34,6 +36,7 @@ class RootController(BaseController):
     secc = SecureController()
 
     admin = AdminController(model, DBSession, config_type=TGAdminConfig)
+    #catwalk = Catwalk(model, DBSession)
 
     error = ErrorController()
 
