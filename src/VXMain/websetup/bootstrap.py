@@ -19,39 +19,44 @@ def bootstrap(command, conf, vars):
         u.display_name = u'Example manager'
         u.email_address = u'manager@somedomain.com'
         u.password = u'managepass'
-    
         model.DBSession.add(u)
-    
+
         g = model.Group()
         g.group_name = u'managers'
         g.display_name = u'Managers Group'
-    
         g.users.append(u)
-    
         model.DBSession.add(g)
-    
+
         p = model.Permission()
         p.permission_name = u'manage'
         p.description = u'This permission give an administrative right to the bearer'
         p.groups.append(g)
-    
         model.DBSession.add(p)
-    
+
         u1 = model.User()
         u1.user_name = u'editor'
         u1.display_name = u'Example editor'
         u1.email_address = u'editor@somedomain.com'
         u1.password = u'editpass'
-    
         model.DBSession.add(u1)
+
+        page = model.Page()
+        page.name = u'FrontMain'
+        page.title = u'VirtualXistenz: where digital dreams come alive'
+        page.author = u1
+        page.body = u'Welcome and HelloWorld!'
+        model.DBSession.add(page)
+
+
         model.DBSession.flush()
         transaction.commit()
+
     except IntegrityError:
         print 'Warning, there was a problem adding your auth data, it may have already been added:'
         import traceback
         print traceback.format_exc()
         transaction.abort()
         print 'Continuing with bootstrapping...'
-        
+
 
     # <websetup.bootstrap.after.auth>

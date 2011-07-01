@@ -16,16 +16,16 @@ from VXMain.model.page import Page
 
 
 ProjectPages = Table('project_pages', DeclarativeBase.metadata,
-    Column('project_id', Integer, ForeignKey('projects.id')),
-    Column('page_id', Integer, ForeignKey('pages.id'))
+    Column('project_id', Integer, ForeignKey('project.id')),
+    Column('page_id', Integer, ForeignKey('page.id'))
 )
 
 class Project(DeclarativeBase):
-    __tablename__ = 'projects'
+    __tablename__ = 'project'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(Unicode(128), nullable=False)
-    descr = Column(Unicode, nullable=False)
+    id = Column(Integer, primary_key = True)
+    name = Column(Unicode(128), nullable = False)
+    descr = Column(Unicode, nullable = False)
     pages = relationship("Page",
-                    secondary=ProjectPages,
-                    backref="projects")
+                    secondary = ProjectPages,
+                    backref = "project")
