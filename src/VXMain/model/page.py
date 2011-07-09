@@ -32,9 +32,9 @@ class Page(DeclarativeBase):
     name = Column(Unicode(32), nullable = False)
     title = Column(Unicode(128), nullable = False)
     body = Column(Unicode, nullable = False)
-    author_id = Column(Integer, ForeignKey('tg_user.user_id'))
-    updated = Column(DateTime)
-    created = Column(DateTime)
+    author_id = Column(Integer, ForeignKey('tg_user.user_id'), nullable = False)
+    updated = Column(DateTime, nullable = False)
+    created = Column(DateTime, nullable = False)
     author = relation(User, backref = (backref('pages', order_by = updated)))
     tags = relationship("Tag",
                     secondary = PageTags,

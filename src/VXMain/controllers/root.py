@@ -1,51 +1,21 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, url, request, redirect
-from pylons.i18n import ugettext as _, lazy_ugettext as l_
-from tgext.admin.tgadminconfig import TGAdminConfig
-from tgext.admin.controller import AdminController
-from repoze.what import predicates
-from tgext.crud import CrudRestController
-from sprox.tablebase import TableBase
-from sprox.formbase import EditableForm, AddRecordForm
-from sprox.fillerbase import TableFiller, EditFormFiller
-
-
+from VXMain import model
+from VXMain.controllers.error import ErrorController
+from VXMain.controllers.secure import SecureController
+from VXMain.controllers.page import PageController
 from VXMain.lib.base import BaseController
 from VXMain.model import DBSession, metadata
-from VXMain.model.page import *
 from VXMain.model.project import *
-from VXMain import model
-from VXMain.controllers.secure import SecureController
+from pylons.i18n import ugettext as _, lazy_ugettext as l_
+from repoze.what import predicates
+from tg import expose, flash, require, url, request, redirect
+from tgext.admin.controller import AdminController
+from tgext.admin.tgadminconfig import TGAdminConfig
 
-from VXMain.controllers.error import ErrorController
 
 __all__ = ['RootController']
-
-
-class PageController(CrudRestController):
-    model = Page
-
-    class new_form_type(AddRecordForm):
-        __model__ = Page
-
-    class edit_form_type(EditableForm):
-        __model__ = Page
-
-    class edit_filler_type(EditFormFiller):
-        __model__ = Page
-
-    class table_type(TableBase):
-        __model__ = Page
-
-    class table_filler_type(TableFiller):
-        __model__ = Page
-
-    @expose('VXMain.templates.rest_get_one')
-    def get_one(self, *args, **kw):
-        return super(PageController, self).get_one(*args, **kw)
-
 
 
 class RootController(BaseController):
@@ -69,7 +39,7 @@ class RootController(BaseController):
 
     error = ErrorController()
 
-    page = PageController(DBSession)
+    page = PageController()
 
     @expose('VXMain.templates.index')
     def index(self):
