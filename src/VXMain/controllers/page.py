@@ -75,7 +75,7 @@ class PageController(BaseController):
     @expose()
     @validate(form = createPageForm, error_handler = add)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    def _c(self, name, title, body, tags = [], categories = []):
+    def _c(self, name, title, body, tags = []):
         author = DBSession.query(User).filter_by(user_name = request.identity['repoze.who.userid'])
         new = Page(
             name = name,
@@ -85,7 +85,6 @@ class PageController(BaseController):
             created = datetime.now(),
             updated = datetime.now(),
             tags = tags,
-            categories = categories,
         )
         DBSession.add(new)
         flash(u'Added page: %s' % (new.title))
@@ -104,9 +103,9 @@ class PageController(BaseController):
     @validate(form = updatePageForm)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
     @expose('VXMain.templates.pageUpdate')
-    def _u(self, name, title = None, body = None, tags = [], categories = []):
+    def _u(self, name, title = None, body = None, tags = []):
         page = DBSession.query(Page).filter_by(name = name).one()
-        for I in ("name", "title", "body", "tags", "categories"):
+        for I in ("name", "title", "body", "tags"):
             page.I = I
         return dict(page = page, pageRole = 'u')
 
