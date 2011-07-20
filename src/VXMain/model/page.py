@@ -11,8 +11,10 @@ from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Integer, Unicode, DateTime
 from VXMain.model import DeclarativeBase, metadata, DBSession
 from VXMain.model.auth import User
+from VXMain.model.resource import Resource
 
 
+# DeclarativeBase.metadata
 PageTags = Table('page_tags', metadata,
     Column('page_id', Integer, ForeignKey('page.id')),
     Column('tag_id', Integer, ForeignKey('tag.id'))
@@ -23,10 +25,9 @@ CollectionCategories = Table('collection_categories', metadata,
     Column('category_id', Integer, ForeignKey('category.id'))
 )
 
-# DeclarativeBase.metadata
-CollectionPages = Table('collection_pages', metadata,
-    Column('collection_id', Integer, ForeignKey('page_collection.id')),
-    Column('page_id', Integer, ForeignKey('page.id'))
+CollectionResources = Table('collection_resources', metadata,
+    Column('collection_id', Integer, ForeignKey('collections.id')),
+    Column('resource_id', Integer, ForeignKey('resources.id'))
 )
 
 class Page(DeclarativeBase):
@@ -39,9 +40,8 @@ class Page(DeclarativeBase):
     created = Column(DateTime, nullable = False)
     author_id = Column(Integer, ForeignKey('tg_user.user_id'), nullable = False)
     author = relation(User, backref = (backref('pages', order_by = updated)))
-    tags = relationship("Tag",
-                    secondary = PageTags,
-                    backref = "pages")
+    tags = relationship("Tag", secondary = PageTags, backref = "pages")
+    collection = Column(Integer, ForeignKey('page_collection.id'), nullable = True)
 
 class Tag(DeclarativeBase):
     __tablename__ = 'tag'
@@ -53,14 +53,14 @@ class Category(DeclarativeBase):
     id = Column(Integer, primary_key = True)
     label = Column(Unicode(64), nullable = False)
 
-class PageCollection(DeclarativeBase):
-    __tablename__ = 'page_collection'
+class Collection(DeclarativeBase):
+    __tablename__ = 'collections'
     id = Column(Integer, primary_key = True)
     label = Column(Unicode(64), nullable = False)
-    pages = relationship("Page",
-                    secondary = CollectionPages,
-                    backref = "collection")
+    pages = relationship("Page", backref = "collection")
     categories = relationship("Category",
                     secondary = CollectionCategories,
                     backref = "collections")
-
+    resources = relationship("Resource",
+                    secondary = CollectionResources,
+                    backref = "collections")

@@ -7,14 +7,12 @@ import logging
 from tg import config
 from datetime import datetime
 from VXMain import model
-
 import transaction
 
 # why is it wanting command, conf...vars?!?!
 def bootstrap(command, conf, vars):
     """Place any commands to setup VXMain here"""
 
-    # <websetup.bootstrap.before.auth
     from sqlalchemy.exc import IntegrityError
 
     editorU = model.User()
@@ -46,7 +44,7 @@ def bootstrap(command, conf, vars):
     frontPage.body = u'Welcome and HelloWorld!'
     frontPage.created = datetime.now()
     frontPage.updated = datetime.now()
-    frontPage.categories.append(specPageCat)
+    #frontPage.categories.append(specPageCat)
     frontPage.tags.append(frontPageTag)
 
     try:
