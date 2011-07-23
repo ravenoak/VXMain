@@ -8,8 +8,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 # Global session manager: DBSession() returns the Thread-local
 # session object appropriate for the current web request.
-maker = sessionmaker(autoflush=True, autocommit=False,
-                     extension=ZopeTransactionExtension())
+maker = sessionmaker(autoflush = True, autocommit = False,
+                     extension = ZopeTransactionExtension())
 DBSession = scoped_session(maker)
 
 # Base class for all of our model classes: By default, the data model is
@@ -40,7 +40,7 @@ metadata = DeclarativeBase.metadata
 
 def init_model(engine):
     """Call me before using any of the tables or classes in the model."""
-    DBSession.configure(bind=engine)
+    DBSession.configure(bind = engine)
     # If you are using reflection to introspect your database and create
     # table objects for you, your tables must be defined and mapped inside
     # the init_model function, so that the engine is available if you
@@ -60,5 +60,6 @@ def init_model(engine):
 
 # Import your model modules here.
 from VXMain.model.auth import User, Group, Permission
-from VXMain.model.page import Page, Tag, Category, PageTags, PageCategories
-from VXMain.model.project import Project, ProjectPages
+from VXMain.model.page import Page, PageCollection, Tag, Category, PageTags, CollectionCategories, CollectionPages
+from VXMain.model.resource import Resource, ResourceType
+from VXMain.model.project import Project

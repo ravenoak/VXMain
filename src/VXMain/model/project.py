@@ -9,9 +9,8 @@ from sqlalchemy import *
 from sqlalchemy.orm import mapper, relation, relationship, backref
 from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Integer, Unicode, LargeBinary
-
 from VXMain.model import DeclarativeBase, metadata, DBSession
-from VXMain.model.page import Page
+from VXMain.model.page import Collection as PageCollection
 
 
 ProjectPages = Table('project_pages', DeclarativeBase.metadata,
@@ -43,3 +42,8 @@ class Resource(DeclarativeBase):
     descr = Column(Unicode, nullable = True)
     type = relation(ResourceType, backref = (backref('resources', order_by = label)))
 
+class Guide(PageCollection):
+    pass
+
+class PoC(PageCollection):
+    pass
