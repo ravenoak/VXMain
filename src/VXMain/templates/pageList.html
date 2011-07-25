@@ -19,15 +19,15 @@
 	<div>
 		<h1>All Pages</h1>
 		<ul>
-			<li py:for="name in pageNames"><a
-				href="${tg.url('/page/_r/' + name)}" py:content="name">Page Name
+			<li py:for="page in pages"><a
+				href="${tg.url('/page/' + page.name)}" py:content="page.name">Page Name
 					Here.</a>
 			</li>
 		</ul>
 	</div>
 	<div>
 		<h1>
-			<a href="/page/c">Add Page</a>
+			<a href="/page/new">Add Page</a>
 		</h1>
 
 	</div>

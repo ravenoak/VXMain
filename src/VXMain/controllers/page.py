@@ -4,20 +4,22 @@ Created on Jul 9, 2011
 @author: ravenoak
 '''
 
+from VXMain.lib.base import BaseController
+from VXMain.model import DBSession
+from VXMain.model.auth import User
+from VXMain.model.page import Page, Tag, Collection
+from VXMain.widgets.PageForms import updatePageForm, updatePageFiller
 from datetime import datetime
+from pylons.i18n import ugettext as _, lazy_ugettext as l_
+from repoze.what import predicates
 from sprox.fillerbase import TableFiller, EditFormFiller
 from sprox.formbase import EditableForm, AddRecordForm
 from sprox.tablebase import TableBase
 from sqlalchemy.orm.exc import NoResultFound
-from pylons.i18n import ugettext as _, lazy_ugettext as l_
-from repoze.what import predicates
 from tg import expose, flash, require, url, request, redirect, tmpl_context, validate
 from tgext.crud import CrudRestController
-from VXMain.lib.base import BaseController
-from VXMain.model import DBSession
-from VXMain.model.page import Page
-from VXMain.model.auth import User
-from VXMain.widgets.PageForms import createPageForm, updatePageForm
+from markdown import Markdown
+from genshi.core import Markup
 
 
 class RestPageController(CrudRestController):
@@ -47,78 +49,138 @@ class PageController(BaseController):
     """
     """
 
+    #rest = RestPageController()
+
     @expose()
     def index(self):
-        redirect('/page/list')
+        redirect(url('/page/listByName'))
 
-    @expose('VXMain.templates.pageUpdate')
-    def add(self, name):
-        tmpl_context.createPageForm = createPageForm
-        page = Page()
-        return dict(pageRole = 'c', page = page)
+    @expose()
+    def add(self, name = u'NewPage'):
+        redirect(url('/page/new/' + name))
+
+    @expose()
+    def create(self, name = u'NewPage'):
+        redirect(url('/page/new/' + name))
 
     @expose('VXMain.templates.pageUpdate')
     def edit(self, name):
         tmpl_context.updatePageForm = updatePageForm
-        page = DBSession.query(Page).filter_by(name = name)
-        return dict(pageRole = 'u', page = page)
-
-    @expose('VXMain.templates.pageList')
-    def list(self):
-        pageNames = [page.name for page in DBSession.query(Page)]
-        return dict(pageNames = pageNames)
+        pageID, pageName = DBSession.query(Page.id, Page.name).filter_by(name = unicode(name)).one()
+        value = updatePageFiller.get_value(values = {'id' : pageID, })
+        return dict(pageRole = 'u', value = value, pageName = pageName)
 
     @expose('VXMain.templates.pageRead')
-    def by_name(self, name):
-        return self._r(name)
+    def get(self, page = None):
+        if not page:
+            redirect(url('/page/listByName'))
+        tmpl_context.markup = Markup
+        tmpl_context.markdown = Markdown()
+        try:
+            page = int(page)
+        except ValueError:
+            if type(page) == str:
+                return self.getByName(unicode(page))
+        return self._r(page)
 
     @expose()
-    @validate(form = createPageForm, error_handler = add)
-    @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    def _c(self, name, title, body, tags = []):
-        author = DBSession.query(User).filter_by(user_name = request.identity['repoze.who.userid'])
-        new = Page(
-            name = name,
-            title = title,
-            body = body,
-            author = author,
-            created = datetime.now(),
-            updated = datetime.now(),
-            tags = tags,
-        )
-        DBSession.add(new)
-        flash(u'Added page: %s' % (new.title))
-        redirect('./list')
+    def getAll(self):
+        redirect(url())
 
     @expose('VXMain.templates.pageRead')
-    def _r(self, search, **kw):
-        if (search == u'search'):
-            # moment for try
-            page = DBSession.query(Page).filter_by(kw).one()
-        else:
-            # moment for try
-            page = DBSession.query(Page).filter_by(name = search).one()
+    def getByName(self, name):
+        try:
+            page = DBSession.query(Page).filter_by(name = unicode(name)).one()
+        except NoResultFound:
+            flash(l_(''))
+            redirect()
+        tmpl_context.markup = Markup
+        tmpl_context.markdown = Markdown()
         return dict(page = page)
 
+    @expose()
+    def list(self):
+        redirect(url('/page/listByName'))
+
+    @expose('VXMain.templates.pageList')
+    def listByName(self):
+        pages = DBSession.query(Page).order_by(Page.name)
+        return dict(pages = pages)
+
+    @expose('VXMain.templates.pageList')
+    def listByUpdated(self):
+        pages = DBSession.query(Page).order_by(Page.updated)
+        return dict(pages = pages)
+
+    @expose('VXMain.templates.pageUpdate')
+    def new(self, name = u'NewPage'):
+        name = unicode(name)
+        tmpl_context.updatePageForm = updatePageForm
+        return dict(pageRole = 'c', pageName = name, value = {'name': name})
+
+    @expose('VXMain.templates.pageList')
+    def search(self, **kw):
+        pages = DBSession.query(Page).filter_by(kw)
+        return dict(pages = pages)
+
+    @expose()
+    @validate(form = updatePageForm, error_handler = add)
+    @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
+    def _c(self, name, confirmed = False, **kw):
+        if confirmed:
+            page = Page()
+            page.name = unicode(name)
+            if kw['title']:
+                page.title = unicode(kw['title'])
+            if kw['body']:
+                page.body = unicode(kw['body'])
+            if kw['collection']:
+                page.collection = DBSession.query(Collection).get(kw['collection'])
+            if kw['tags']:
+                for I in kw['tags']:
+                    page.tags.append(DBSession.query(Tag).get(I))
+            page.created = datetime.now()
+            page.updated = datetime.now()
+            DBSession.add(page)
+            DBSession.flush()
+            flash(u'Added page: %s' % (page.name))
+            redirect(url('/page/' + page.name))
+        redirect(url('/page/'))
+
+    @expose()
+    def _r(self, pageID):
+        page = DBSession.query(Page).get(pageID)
+        return dict(page = page)
+
+    @expose()
     @validate(form = updatePageForm)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    @expose('VXMain.templates.pageUpdate')
-    def _u(self, name, title = None, body = None, tags = []):
-        page = DBSession.query(Page).filter_by(name = name).one()
-        for I in ("name", "title", "body", "tags"):
-            page.I = I
-        return dict(page = page, pageRole = 'u')
+    def _u(self, name, confirmed = False, **kw):
+        if (confirmed == True):
+            page = DBSession.query(Page).filter_by(name = unicode(name)).one()
+            if kw['title']:
+                page.title = unicode(kw['title'])
+            if kw['body']:
+                page.body = unicode(kw['body'])
+            if kw['collection']:
+                page.collection = DBSession.query(Collection).get(kw['collection'])
+            if kw['tags']:
+                for I in kw['tags']:
+                    page.tags.append(DBSession.query(Tag).get(I))
+            page.updated = datetime.now()
+            DBSession.flush()
+        redirect(url('/page/' + page.name))
 
+    @expose()
     #@validate(form = deletePageForm)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    @expose('VXMain.templates.pageDelete')
     def _d(self, name, confirmed = False):
         if (confirmed == True):
-            DBSession.query(Page).filter_by(name = name).delete()
+            DBSession.query(Page).filter_by(name = unicode(name)).delete()
+            DBSession.flush()
             flash(_("Deleted Page: $s") % name, 'warning')
-        redirect('./list')
+        redirect(url('/page/list'))
 
     @expose('VXMain.templates.pageRead')
-    def default(self, name):
-        pass
-        return self.by_name(name)
+    def _default(self, page):
+        return self.get(page)

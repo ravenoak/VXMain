@@ -8,15 +8,15 @@
 
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
-  <title>Editing ()</title>
+  <title>Editing ${pageName}</title>
 </head>
 
 <body>
 	<div py:if="pageRole == 'c'">
-		${tmpl_context.createPageForm(action = '_c')}
+		${tmpl_context.updatePageForm(action = '/page/_c/' + pageName, value = value)}
 	</div>
 	<div py:if="pageRole == 'u'">
-		${tmpl_context.updatePageForm(action = '_u')}
+		${tmpl_context.updatePageForm(action = '/page/_u/' + pageName, value = value)}
 	</div>
 </body>
 </html>

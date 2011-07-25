@@ -23,25 +23,25 @@ class SampleModel(DeclarativeBase):
 
 
 
-class OneToManyParent(Base):
+class OnePToManyC_Parent(Base):
     __tablename__ = 'parent'
     id = Column(Integer, primary_key=True)
     children = relationship("Child", backref="parent")
 
-class OneToManyChild(Base):
+class OnePToManyC_Child(Base):
     __tablename__ = 'child'
     id = Column(Integer, primary_key=True)
     parent_id = Column(Integer, ForeignKey('parent.id'))
 
 
 
-class ManyToOneParent(Base):
+class ManyPToOneC_Parent(Base):
     __tablename__ = 'parent'
     id = Column(Integer, primary_key=True)
     child_id = Column(Integer, ForeignKey('child.id'))
     child = relationship("Child", backref="parents")
 
-class ManyToOneChild(Base):
+class ManyPToOneC_Child(Base):
     __tablename__ = 'child'
     id = Column(Integer, primary_key=True)
 
@@ -52,14 +52,14 @@ association_table = Table('association', Base.metadata,
     Column('right_id', Integer, ForeignKey('right.id'))
 )
 
-class ManyToManyParent(Base):
+class ManyToMany_Parent(Base):
     __tablename__ = 'left'
     id = Column(Integer, primary_key=True)
     children = relationship("Child",
                     secondary=association_table,
                     backref="parents")
 
-class ManyToManyChild(Base):
+class ManyToMany_Child(Base):
     __tablename__ = 'right'
     id = Column(Integer, primary_key=True)
 

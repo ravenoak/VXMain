@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from VXMain import model
+from VXMain.controllers.admin import adminController
 from VXMain.controllers.error import ErrorController
-from VXMain.controllers.secure import SecureController
 from VXMain.controllers.page import PageController
+from VXMain.controllers.secure import SecureController
 from VXMain.lib.base import BaseController
-from VXMain.model import DBSession, metadata
-from VXMain.model.project import *
+#from VXMain.model import DBSession
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
-from repoze.what import predicates
+#from repoze.what import predicates
 from tg import expose, flash, require, url, request, redirect
-from tgext.admin.controller import AdminController
-from tgext.admin.tgadminconfig import TGAdminConfig
-
 
 __all__ = ['RootController']
 
@@ -33,51 +29,31 @@ class RootController(BaseController):
 
     """
     secc = SecureController()
-
-    admin = AdminController(model, DBSession, config_type = TGAdminConfig)
-    #catwalk = Catwalk(model, DBSession)
-
+    admin = adminController
     error = ErrorController()
-
     page = PageController()
+    pages = page
 
-    @expose('VXMain.templates.index')
+    @expose()
     def index(self):
         """Handle the front-page."""
-        return dict(page = 'index')
+        redirect(url('/page/Welcome'))
 
-    @expose('VXMain.templates.about')
+    @expose()
     def about(self):
         """Handle the 'about' page."""
-        return dict(page = 'about')
+        redirect(url('/page/About'))
 
-    @expose('VXMain.templates.environ')
-    def environ(self):
-        """This method showcases TG's access to the wsgi environment."""
-        return dict(environment = request.environ)
+    @expose()
+    def contact(self):
+        """Handle the 'contact' page."""
+        redirect(url('/page/Contact'))
 
-    @expose('VXMain.templates.data')
-    @expose('json')
-    def data(self, **kw):
-        """This method showcases how you can use the same controller for a data page and a display page"""
-        return dict(params = kw)
-
-    @expose('VXMain.templates.authentication')
-    def auth(self):
-        """Display some information about auth* on this application."""
-        return dict(page = 'auth')
-
-    @expose('VXMain.templates.index')
-    @require(predicates.has_permission('manage', msg = l_('Only for managers')))
-    def manage_permission_only(self, **kw):
-        """Illustrate how a page for managers only works."""
-        return dict(page = 'managers stuff')
-
-    @expose('VXMain.templates.index')
-    @require(predicates.is_user('editor', msg = l_('Only for the editor')))
-    def editor_user_only(self, **kw):
-        """Illustrate how a page exclusive for the editor works."""
-        return dict(page = 'editor stuff')
+#    @expose('VXMain.templates.data')
+#    @expose('json')
+#    def data(self, **kw):
+#        """This method showcases how you can use the same controller for a data page and a display page"""
+#        return dict(params = kw)
 
     @expose('VXMain.templates.login')
     def login(self, came_from = url('/')):
@@ -89,7 +65,7 @@ class RootController(BaseController):
                     came_from = came_from)
 
     @expose()
-    def post_login(self, came_from = '/'):
+    def post_login(self, came_from = url('/')):
         """
         Redirect the user to the initially requested page on successful
         authentication or redirect her back to the login page if login failed.
@@ -111,3 +87,4 @@ class RootController(BaseController):
         """
         flash(_('We hope to see you soon!'))
         redirect(came_from)
+

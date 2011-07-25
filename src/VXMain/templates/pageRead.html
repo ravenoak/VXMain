@@ -13,7 +13,9 @@
 </head>
 
 <body id="page.id_${page.id}">
-	<div id="page.body">${page.body}</div>
+	<div id="page.body" py:content="tmpl_context.markup(tmpl_context.markdown.convert(page.body))">
+		<p>Replaced</p>
+	</div>
 	<div id="info">
 		<p>
 			<span id="page.author">Created by: ${page.author.display_name}</span>
@@ -26,11 +28,7 @@
 			<li py:for="tag in page.tags"><span py:content="tag.label">Tag</span>
 			</li>
 		</ul>
-		<ul id="page.categories">
-			<li py:for="category in page.categories"><span
-				py:content="category.label">Category</span>
-			</li>
-		</ul>
 	</div>
+	<div><a href="/page/edit/${page.name}">Edit this page</a></div>
 </body>
 </html>

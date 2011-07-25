@@ -35,18 +35,18 @@ __all__ = ['User', 'Group', 'Permission']
 # groups and permissions. This is required by repoze.what.
 group_permission_table = Table('tg_group_permission', metadata,
     Column('group_id', Integer, ForeignKey('tg_group.group_id',
-        onupdate="CASCADE", ondelete="CASCADE"), primary_key=True),
+        onupdate = "CASCADE", ondelete = "CASCADE"), primary_key = True),
     Column('permission_id', Integer, ForeignKey('tg_permission.permission_id',
-        onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
+        onupdate = "CASCADE", ondelete = "CASCADE"), primary_key = True)
 )
 
 # This is the association table for the many-to-many relationship between
 # groups and members - this is, the memberships. It's required by repoze.what.
 user_group_table = Table('tg_user_group', metadata,
     Column('user_id', Integer, ForeignKey('tg_user.user_id',
-        onupdate="CASCADE", ondelete="CASCADE"), primary_key=True),
+        onupdate = "CASCADE", ondelete = "CASCADE"), primary_key = True),
     Column('group_id', Integer, ForeignKey('tg_group.group_id',
-        onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
+        onupdate = "CASCADE", ondelete = "CASCADE"), primary_key = True)
 )
 
 
@@ -65,17 +65,17 @@ class Group(DeclarativeBase):
 
     #{ Columns
 
-    group_id = Column(Integer, autoincrement=True, primary_key=True)
+    group_id = Column(Integer, autoincrement = True, primary_key = True)
 
-    group_name = Column(Unicode(16), unique=True, nullable=False)
+    group_name = Column(Unicode(16), unique = True, nullable = False)
 
     display_name = Column(Unicode(255))
 
-    created = Column(DateTime, default=datetime.now)
+    created = Column(DateTime, default = datetime.now)
 
     #{ Relations
 
-    users = relation('User', secondary=user_group_table, backref='groups')
+    users = relation('User', secondary = user_group_table, backref = 'groups')
 
     #{ Special methods
 
@@ -103,19 +103,19 @@ class User(DeclarativeBase):
 
     #{ Columns
 
-    user_id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, autoincrement = True, primary_key = True)
 
-    user_name = Column(Unicode(16), unique=True, nullable=False)
+    user_name = Column(Unicode(16), unique = True, nullable = False)
 
-    email_address = Column(Unicode(255), unique=True, nullable=False,
-                           info={'rum': {'field':'Email'}})
+    email_address = Column(Unicode(255), unique = True, nullable = False,
+                           info = {'rum': {'field':'Email'}})
 
     display_name = Column(Unicode(255))
 
     _password = Column('password', Unicode(80),
-                       info={'rum': {'field':'Password'}})
+                       info = {'rum': {'field':'Password'}})
 
-    created = Column(DateTime, default=datetime.now)
+    created = Column(DateTime, default = datetime.now)
 
     #{ Special methods
 
@@ -139,12 +139,12 @@ class User(DeclarativeBase):
     @classmethod
     def by_email_address(cls, email):
         """Return the user object whose email address is ``email``."""
-        return DBSession.query(cls).filter_by(email_address=email).first()
+        return DBSession.query(cls).filter_by(email_address = email).first()
 
     @classmethod
     def by_user_name(cls, username):
         """Return the user object whose user name is ``username``."""
-        return DBSession.query(cls).filter_by(user_name=username).first()
+        return DBSession.query(cls).filter_by(user_name = username).first()
 
     def _set_password(self, password):
         """Hash ``password`` on the fly and store its hashed version."""
@@ -166,7 +166,7 @@ class User(DeclarativeBase):
         """Return the hashed version of the password."""
         return self._password
 
-    password = synonym('_password', descriptor=property(_get_password,
+    password = synonym('_password', descriptor = property(_get_password,
                                                         _set_password))
 
     #}
@@ -202,16 +202,16 @@ class Permission(DeclarativeBase):
 
     #{ Columns
 
-    permission_id = Column(Integer, autoincrement=True, primary_key=True)
+    permission_id = Column(Integer, autoincrement = True, primary_key = True)
 
-    permission_name = Column(Unicode(63), unique=True, nullable=False)
+    permission_name = Column(Unicode(63), unique = True, nullable = False)
 
     description = Column(Unicode(255))
 
     #{ Relations
 
-    groups = relation(Group, secondary=group_permission_table,
-                      backref='permissions')
+    groups = relation(Group, secondary = group_permission_table,
+                      backref = 'permissions')
 
     #{ Special methods
 
@@ -225,3 +225,4 @@ class Permission(DeclarativeBase):
 
 
 #}
+

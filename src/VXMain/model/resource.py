@@ -5,11 +5,10 @@ Created on Jul 18, 2011
 '''
 
 
-from sqlalchemy import *
-from sqlalchemy import Table, ForeignKey, Column
-from sqlalchemy.orm import mapper, relation, relationship, backref
-from sqlalchemy.types import Integer, Unicode, DateTime
 from VXMain.model import DeclarativeBase, metadata
+from sqlalchemy import *
+from sqlalchemy.orm import mapper, relation, relationship, backref
+from sqlalchemy.types import Integer, Unicode, DateTime, PickleType
 
 
 class Resource(DeclarativeBase):
@@ -18,22 +17,36 @@ class Resource(DeclarativeBase):
     label = Column(Unicode(64), nullable = False)
     resource_type = relationship("ResourceType", backref = "resources")
     resource_type_id = Column(Integer, ForeignKey('resource_types.id'))
+    pickle = Column(PickleType)
+
+    def __repr__(self):
+        return ('<Resource: label=%s>' % self.label).encode('utf-8')
+
+    def __unicode__(self):
+        return self.label
 
 class ResourceType(DeclarativeBase):
     __tablename__ = 'resource_types'
     id = Column(Integer, primary_key = True)
     label = Column(Unicode(64), nullable = False)
-    class_type = Column(Unicode(64), nullable = False)
+    hint = Column(Unicode(64), nullable = False)
+
+    def __repr__(self):
+        return ('<ResourceType: label=%s>' % self.label).encode('utf-8')
+
+    def __unicode__(self):
+        return self.label
 
 class Image(Resource):
-    data = Column(Unicode(), nullable = False)
+    dataImage = Column(Unicode(), nullable = False)
 
 class Snippet(Resource):
-    data = Column(Unicode(), nullable = False)
+    dataSnippet = Column(Unicode(), nullable = False)
     lang = Column(Unicode(16), nullable = False)
 
 class GitRepo(Resource):
     url = Column(Unicode(128), nullable = False)
 
 class CodeRef(GitRepo):
-    pass
+    path = Column(Unicode(128), nullable = False)
+
