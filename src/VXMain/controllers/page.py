@@ -8,7 +8,7 @@ from VXMain.lib.base import BaseController
 from VXMain.model import DBSession
 from VXMain.model.auth import User
 from VXMain.model.page import Page, Tag, Collection
-from VXMain.widgets.PageForms import updatePageForm, updatePageFiller
+from VXMain.widgets.Forms import createPageForm, updatePageForm, updatePageFiller
 from datetime import datetime
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
 from repoze.what import predicates
@@ -85,15 +85,15 @@ class PageController(BaseController):
 
     @expose()
     def getAll(self):
-        redirect(url())
+        redirect(url('/page/get'))
 
     @expose('VXMain.templates.pageRead')
     def getByName(self, name):
         try:
             page = DBSession.query(Page).filter_by(name = unicode(name)).one()
         except NoResultFound:
-            flash(l_(''))
-            redirect()
+            flash(u'Page "%s" not found' % (name))
+            redirect(url('/page/new/' + name))
         tmpl_context.markup = Markup
         tmpl_context.markdown = Markdown()
         return dict(page = page)
@@ -115,7 +115,7 @@ class PageController(BaseController):
     @expose('VXMain.templates.pageUpdate')
     def new(self, name = u'NewPage'):
         name = unicode(name)
-        tmpl_context.updatePageForm = updatePageForm
+        tmpl_context.createPageForm = createPageForm
         return dict(pageRole = 'c', pageName = name, value = {'name': name})
 
     @expose('VXMain.templates.pageList')
@@ -124,11 +124,13 @@ class PageController(BaseController):
         return dict(pages = pages)
 
     @expose()
-    @validate(form = updatePageForm, error_handler = add)
+    @validate(form = createPageForm, error_handler = new)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
     def _c(self, name, confirmed = False, **kw):
         if confirmed:
             page = Page()
+            page.created = datetime.now()
+            page.updated = datetime.now()
             page.name = unicode(name)
             if kw['title']:
                 page.title = unicode(kw['title'])
@@ -139,11 +141,13 @@ class PageController(BaseController):
             if kw['tags']:
                 for I in kw['tags']:
                     page.tags.append(DBSession.query(Tag).get(I))
-            page.created = datetime.now()
-            page.updated = datetime.now()
-            DBSession.add(page)
-            DBSession.flush()
-            flash(u'Added page: %s' % (page.name))
+            try:
+                DBSession.add(page)
+                DBSession.flush()
+            except:
+                flash (u'Could not add Page: %s' % (page.name), 'error')
+                redirect(url('/page/'))
+            flash(u'Added Page: %s' % (page.name))
             redirect(url('/page/' + page.name))
         redirect(url('/page/'))
 

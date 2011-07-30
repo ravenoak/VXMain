@@ -69,8 +69,8 @@ class Page(DeclarativeBase):
     name = Column(Unicode(32), nullable = False)
     title = Column(Unicode(128), nullable = False)
     body = Column(Unicode, nullable = False)
-    updated = Column(DateTime, nullable = False)
     created = Column(DateTime, nullable = False)
+    updated = Column(DateTime, nullable = False)
     author_id = Column(Integer, ForeignKey('tg_user.user_id'), nullable = False)
     author = relation(User, backref = (backref('pages', order_by = updated)))
     tags = relationship("Tag", secondary = PageTags, backref = "pages")
@@ -82,18 +82,6 @@ class Page(DeclarativeBase):
 
     def __unicode__(self):
         return self.name
-
-#    def __init__(self, name, title, body, author, created, updated, tags):
-#        self.name = unicode(name)
-#        self.title = unicode(title)
-#        self.body = body
-#        if (author == type(User)):
-#            self.author = author
-#        else:
-#            self.set_author_by_username(author)
-#        self.created = created
-#        self.updated = updated
-#        self.tags = tags
 
     def set_author_by_username(self, username):
         self.author = DBSession.query(User).filter_by(user_name = unicode(username)).one()

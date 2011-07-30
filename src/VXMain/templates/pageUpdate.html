@@ -13,10 +13,12 @@
 
 <body>
 	<div py:if="pageRole == 'c'">
-		${tmpl_context.updatePageForm(action = '/page/_c/' + pageName, value = value)}
+		<h1>New Page</h1>
+		${tmpl_context.createPageForm(action = '/page/_c', value = value)}
 	</div>
 	<div py:if="pageRole == 'u'">
-		${tmpl_context.updatePageForm(action = '/page/_u/' + pageName, value = value)}
+		<h1>You are now editing: <span>${pageName}</span></h1>
+		${tmpl_context.updatePageForm(action = '/page/_u', value = value)}
 	</div>
 </body>
 </html>

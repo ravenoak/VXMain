@@ -7,7 +7,7 @@ Created on Jul 23, 2011
 from VXMain.lib.base import BaseController
 from VXMain.model import DBSession
 from VXMain.model.project import Project
-from VXMain.widgets.ProjectForms import createProjectForm, updateProjectForm
+from VXMain.widgets.Forms import createProjectForm, updateProjectForm, updateProjectFiller
 from datetime import datetime
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
 from repoze.what import predicates
@@ -46,77 +46,135 @@ class ProjectController(BaseController):
     """
     """
 
+    #rest = RestProjectController()
+
     @expose()
     def index(self):
-        redirect('/project/list')
-
-    @expose('VXMain.templates.projectUpdate')
-    def add(self, name):
-        tmpl_context.createProjectForm = createProjectForm
-        project = Project()
-        return dict(pageRole = 'c', project = project)
-
-    @expose('VXMain.templates.projectUpdate')
-    def edit(self, name):
-        tmpl_context.updateProjectForm = updateProjectForm
-        project = DBSession.query(Project).filter_by(name = name)
-        return dict(pageRole = 'u', project = project)
-
-    @expose('VXMain.templates.projectList')
-    def list(self):
-        projectNames = [project.name for project in DBSession.query(Project)]
-        return dict(projectNames = projectNames)
-
-    @expose('VXMain.templates.projectRead')
-    def by_name(self, name):
-        return self._r(name)
+        redirect(url('/project/listByName'))
 
     @expose()
-    @validate(form = createProjectForm, error_handler = add)
-    @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    def _c(self, name, title, body, tags = []):
-        new = Project(
-            name = name,
-            title = title,
-            body = body,
-            author = request.identity['repoze.who.userid'],
-            created = datetime.now(),
-            updated = datetime.now(),
-            tags = tags,
-        )
-        DBSession.add(new)
-        flash(u'Added Project: %s' % (new.label))
-        redirect('./list')
+    def add(self, label = u'New Project'):
+        redirect(url('/project/new?label=' + label))
+
+    @expose()
+    def create(self, label = u'New Project'):
+        redirect(url('/project/new?label=' + label))
+
+    @expose('VXMain.templates.projectUpdate')
+    def edit(self, id):
+        tmpl_context.updateProjectForm = updateProjectForm
+        value = updateProjectFiller.get_value(values = {'id' : id, })
+        return dict(pageRole = 'u', value = value)
 
     @expose('VXMain.templates.projectRead')
-    def _r(self, search, **kw):
-        if (search == u'search'):
-            # moment for try
-            project = DBSession.query(Project).filter_by(kw).one()
-        else:
-            # moment for try
-            project = DBSession.query(Project).filter_by(name = search).one()
+    def get(self, id = None):
+        if not id:
+            redirect(url('/project/list'))
+        try:
+            id = int(id)
+        except ValueError:
+            redirect(url('/project/list'))
+        return self._r(id)
+
+    @expose()
+    def getAll(self):
+        redirect(url('/project/get'))
+
+    @expose('VXMain.templates.projectRead')
+    def getByName(self, name):
+        try:
+            project = DBSession.query(Project).filter_by(name = unicode(name)).one()
+        except NoResultFound:
+            flash(l_(''))
+            redirect(url('/project/new'))
         return dict(project = project)
 
+    @expose()
+    def list(self):
+        redirect(url('/project/listByID'))
+
+    @expose('VXMain.templates.projectList')
+    def listByID(self):
+        projects = DBSession.query(Project).order_by(Project.id)
+        return dict(projects = projects)
+
+    @expose('VXMain.templates.projectList')
+    def listByUpdated(self):
+        projects = DBSession.query(Project).order_by(Project.updated)
+        return dict(projects = projects)
+
+    @expose('VXMain.templates.projectUpdate')
+    def new(self, name = u'NewProject'):
+        name = unicode(name)
+        tmpl_context.createProjectForm = createProjectForm
+        return dict(pageRole = 'c', projectName = name, value = {'name': name})
+
+    @expose('VXMain.templates.projectList')
+    def search(self, **kw):
+        projects = DBSession.query(Project).filter_by(kw)
+        return dict(projects = projects)
+
+    @expose()
+    @validate(form = createProjectForm, error_handler = new)
+    @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
+    def _c(self, name, confirmed = False, **kw):
+        if confirmed:
+            project = Project()
+            project.created = datetime.now()
+            project.updated = datetime.now()
+            project.name = unicode(name)
+            if kw['title']:
+                project.title = unicode(kw['title'])
+            if kw['body']:
+                project.body = unicode(kw['body'])
+            if kw['collection']:
+                project.collection = DBSession.query(Collection).get(kw['collection'])
+            if kw['tags']:
+                for I in kw['tags']:
+                    project.tags.append(DBSession.query(Tag).get(I))
+            try:
+                DBSession.add(project)
+                DBSession.flush()
+            except:
+                flash (u'Could not add project: %s' % (project.name), 'error')
+            flash(u'Added project: %s' % (project.name))
+            redirect(url('/project/' + project.name))
+        redirect(url('/project/'))
+
+    @expose()
+    def _r(self, projectID):
+        project = DBSession.query(Project).get(projectID)
+        return dict(project = project)
+
+    @expose()
     @validate(form = updateProjectForm)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    @expose('VXMain.templates.projectUpdate')
-    def _u(self, name, title = None, body = None, tags = []):
-        project = DBSession.query(Project).filter_by(name = name).one()
-        for I in ("name", "title", "body", "tags"):
-            project.I = I
-        return dict(project = project, pageRole = 'u')
+    def _u(self, name, confirmed = False, **kw):
+        if (confirmed == True):
+            project = DBSession.query(Project).filter_by(name = unicode(name)).one()
+            if kw['title']:
+                project.title = unicode(kw['title'])
+            if kw['body']:
+                project.body = unicode(kw['body'])
+            if kw['collection']:
+                project.collection = DBSession.query(Collection).get(kw['collection'])
+            if kw['tags']:
+                for I in kw['tags']:
+                    project.tags.append(DBSession.query(Tag).get(I))
+            project.updated = datetime.now()
+            DBSession.flush()
+        redirect(url('/project/' + project.name))
 
+    @expose()
     #@validate(form = deleteProjectForm)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
-    @expose('VXMain.templates.projectDelete')
     def _d(self, name, confirmed = False):
         if (confirmed == True):
-            DBSession.query(Project).filter_by(name = name).delete()
+            DBSession.query(Project).filter_by(name = unicode(name)).delete()
+            DBSession.flush()
             flash(_("Deleted Project: $s") % name, 'warning')
-        redirect('./list')
+        redirect(url('/project/list'))
 
     @expose('VXMain.templates.projectRead')
-    def _default(self, name):
-        pass
-        return self.by_name(name)
+    def _default(self, project):
+        return self.get(project)
