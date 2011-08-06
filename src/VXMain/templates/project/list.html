@@ -9,22 +9,22 @@
 <head>
 <meta content="text/html; charset=UTF-8" http-equiv="content-type"
 	py:replace="''" />
-<title>VX: page list</title>
+<title>VX: Project list</title>
 </head>
 
 <body>
 	<div>
-		<h1>All Pages</h1>
+		<h1>All P</h1>
 		<ul>
-			<li py:for="page in pages"><a
-				href="${tg.url('/page/' + page.name)}" py:content="page.name">Page Name
+			<li py:for="project in projects"><a
+				href="${tg.url('/project/' + str(project.id))}" py:content="project.label">Project Label
 					Here.</a>
 			</li>
 		</ul>
 	</div>
 	<div>
 		<h1>
-			<a href="/page/new">Add Page</a>
+			<a href="/project/new">Add Project</a>
 		</h1>
 
 	</div>

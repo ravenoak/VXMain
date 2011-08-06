@@ -46,10 +46,10 @@ class ProjectFiller(EditFormFiller):
     __model__ = Project
 
 
-createPageForm = CreatePage(DBSession)
-updatePageForm = UpdatePage(DBSession)
-updatePageFiller = PageFiller(DBSession)
+create_page_form = CreatePage(DBSession)
+update_page_form = UpdatePage(DBSession)
+update_page_filler = PageFiller(DBSession)
 
-createProjectForm = ProjectForm(DBSession)
-updateProjectForm = ProjectForm(DBSession)
-updateProjectFiller = ProjectFiller(DBSession)
+create_project_form = ProjectForm(DBSession)
+update_project_form = ProjectForm(DBSession)
+update_project_filler = ProjectFiller(DBSession)

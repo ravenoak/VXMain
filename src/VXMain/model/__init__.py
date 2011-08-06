@@ -59,8 +59,8 @@ def init_model(engine):
 
 
 # Import your model modules here.
+#from VXMain.model.audit import *
 from VXMain.model.auth import *
 from VXMain.model.page import *
-from VXMain.model.resource import *
 from VXMain.model.project import *
-
+from VXMain.model.resource import *

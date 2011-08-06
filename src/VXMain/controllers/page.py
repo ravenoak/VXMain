@@ -8,7 +8,7 @@ from VXMain.lib.base import BaseController
 from VXMain.model import DBSession
 from VXMain.model.auth import User
 from VXMain.model.page import Page, Tag, Collection
-from VXMain.widgets.Forms import createPageForm, updatePageForm, updatePageFiller
+from VXMain.widgets.Forms import create_page_form, update_page_form, update_page_filler
 from datetime import datetime
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
 from repoze.what import predicates
@@ -53,7 +53,7 @@ class PageController(BaseController):
 
     @expose()
     def index(self):
-        redirect(url('/page/listByName'))
+        redirect(url('/page/list_by_name'))
 
     @expose()
     def add(self, name = u'NewPage'):
@@ -63,31 +63,31 @@ class PageController(BaseController):
     def create(self, name = u'NewPage'):
         redirect(url('/page/new/' + name))
 
-    @expose('VXMain.templates.pageUpdate')
+    @expose('VXMain.templates.page.update')
     def edit(self, name):
-        tmpl_context.updatePageForm = updatePageForm
-        pageID, pageName = DBSession.query(Page.id, Page.name).filter_by(name = unicode(name)).one()
-        value = updatePageFiller.get_value(values = {'id' : pageID, })
-        return dict(pageRole = 'u', value = value, pageName = pageName)
+        tmpl_context.update_page_form = update_page_form
+        page_id, page_name = DBSession.query(Page.id, Page.name).filter_by(name = unicode(name)).one()
+        value = update_page_filler.get_value(values = {'id' : page_id, })
+        return dict(page_role = 'u', value = value, page_name = page_name)
 
-    @expose('VXMain.templates.pageRead')
+    @expose('VXMain.templates.page.read')
     def get(self, page = None):
         if not page:
-            redirect(url('/page/listByName'))
+            redirect(url('/page/list_by_name'))
         tmpl_context.markup = Markup
         tmpl_context.markdown = Markdown()
         try:
             page = int(page)
         except ValueError:
             if type(page) == str:
-                return self.getByName(unicode(page))
+                return self.get_by_name(unicode(page))
         return self._r(page)
 
     @expose()
     def getAll(self):
         redirect(url('/page/get'))
 
-    @expose('VXMain.templates.pageRead')
+    @expose('VXMain.templates.page.read')
     def getByName(self, name):
         try:
             page = DBSession.query(Page).filter_by(name = unicode(name)).one()
@@ -100,31 +100,31 @@ class PageController(BaseController):
 
     @expose()
     def list(self):
-        redirect(url('/page/listByName'))
+        redirect(url('/page/list_by_name'))
 
-    @expose('VXMain.templates.pageList')
-    def listByName(self):
+    @expose('VXMain.templates.page.list')
+    def list_by_name(self):
         pages = DBSession.query(Page).order_by(Page.name)
         return dict(pages = pages)
 
-    @expose('VXMain.templates.pageList')
+    @expose('VXMain.templates.page.list')
     def listByUpdated(self):
         pages = DBSession.query(Page).order_by(Page.updated)
         return dict(pages = pages)
 
-    @expose('VXMain.templates.pageUpdate')
+    @expose('VXMain.templates.page.update')
     def new(self, name = u'NewPage'):
         name = unicode(name)
-        tmpl_context.createPageForm = createPageForm
+        tmpl_context.create_page_form = create_page_form
         return dict(pageRole = 'c', pageName = name, value = {'name': name})
 
-    @expose('VXMain.templates.pageList')
+    @expose('VXMain.templates.page.list')
     def search(self, **kw):
         pages = DBSession.query(Page).filter_by(kw)
         return dict(pages = pages)
 
     @expose()
-    @validate(form = createPageForm, error_handler = new)
+    @validate(form = create_page_form, error_handler = new)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
     def _c(self, name, confirmed = False, **kw):
         if confirmed:
@@ -145,19 +145,19 @@ class PageController(BaseController):
                 DBSession.add(page)
                 DBSession.flush()
             except:
-                flash (u'Could not add Page: %s' % (page.name), 'error')
+                flash (u'Could not add Page: "%s"' % (page.name), 'error')
                 redirect(url('/page/'))
-            flash(u'Added Page: %s' % (page.name))
+            flash(u'Added Page: "%s"' % (page.name))
             redirect(url('/page/' + page.name))
         redirect(url('/page/'))
 
     @expose()
-    def _r(self, pageID):
-        page = DBSession.query(Page).get(pageID)
+    def _r(self, page_id):
+        page = DBSession.query(Page).get(page_id)
         return dict(page = page)
 
     @expose()
-    @validate(form = updatePageForm)
+    @validate(form = update_page_form)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
     def _u(self, name, confirmed = False, **kw):
         if (confirmed == True):
@@ -176,15 +176,15 @@ class PageController(BaseController):
         redirect(url('/page/' + page.name))
 
     @expose()
-    #@validate(form = deletePageForm)
+    #@validate(form = delete_page_form)
     @require(predicates.has_permission('editor', msg = l_('Only for Editors')))
     def _d(self, name, confirmed = False):
         if (confirmed == True):
             DBSession.query(Page).filter_by(name = unicode(name)).delete()
             DBSession.flush()
-            flash(_("Deleted Page: $s") % name, 'warning')
+            flash(u'Deleted Page: "$s"' % name, 'warning')
         redirect(url('/page/list'))
 
-    @expose('VXMain.templates.pageRead')
+    @expose('VXMain.templates.page.read')
     def _default(self, page):
         return self.get(page)

@@ -4,6 +4,7 @@
 from VXMain.controllers.admin import adminController
 from VXMain.controllers.error import ErrorController
 from VXMain.controllers.page import PageController
+from VXMain.controllers.project import ProjectController
 from VXMain.controllers.secure import SecureController
 from VXMain.lib.base import BaseController
 #from VXMain.model import DBSession
@@ -28,11 +29,13 @@ class RootController(BaseController):
     must be wrapped around with :class:`tg.controllers.WSGIAppController`.
 
     """
-    secc = SecureController()
     admin = adminController
     error = ErrorController()
     page = PageController()
     pages = page
+    project = ProjectController()
+    projects = project
+    secc = SecureController()
 
     @expose()
     def index(self):
@@ -60,7 +63,7 @@ class RootController(BaseController):
         """Start the user login."""
         login_counter = request.environ['repoze.who.logins']
         if login_counter > 0:
-            flash(_('Wrong credentials'), 'warning')
+            flash(u'Wrong credentials', 'warning')
         return dict(page = 'login', login_counter = str(login_counter),
                     came_from = came_from)
 
