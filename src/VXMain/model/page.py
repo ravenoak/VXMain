@@ -13,10 +13,6 @@ from sqlalchemy.types import Integer, Unicode, DateTime
 
 
 # DeclarativeBase.metadata ?
-CollectionCategories = Table('collection_categories', metadata,
-    Column('collection_id', Integer, ForeignKey('page_collections.id')),
-    Column('category_id', Integer, ForeignKey('categories.id'))
-)
 
 CollectionResources = Table('collection_resources', metadata,
     Column('collection_id', Integer, ForeignKey('page_collections.id')),
@@ -50,9 +46,8 @@ class Collection(DeclarativeBase):
     id = Column(Integer, primary_key = True)
     label = Column(Unicode(64), nullable = False)
     pages = relationship("Page", backref = "collection")
-    categories = relationship("Category",
-                    secondary = CollectionCategories,
-                    backref = "collections")
+    child_id = Column(Integer, ForeignKey('child.id'))
+    categories = relationship("Category", backref = "parents")
     resources = relationship("Resource",
                     secondary = CollectionResources,
                     backref = "collections")

@@ -13,7 +13,20 @@ from sqlalchemy.orm import mapper, relation, relationship, backref
 from sqlalchemy.types import Integer, Unicode, LargeBinary
 
 
-class Project(PageCollection):
+class Project(DeclarativeBase):
+    __tablename__ = "projects"
+
+    id = Column(Integer, primary_key = True)
+    label = Column(Unicode(64), nullable = False)
+    page_collections = relationship("PageCollection", backref = "parent")
+    child_id = Column(Integer, ForeignKey('child.id'))
+    child = relationship("Child", backref = "parents")
+    categories = relationship("Category",
+                    secondary = CollectionCategories,
+                    backref = "collections")
+    resources = relationship("Resource",
+                    secondary = CollectionResources,
+                    backref = "collections")
 
     def __repr__(self):
         return ('<Project: label=%s>' % self.label).encode('utf-8')
@@ -21,7 +34,7 @@ class Project(PageCollection):
     def __unicode__(self):
         return self.label
 
-class Guide(PageCollection):
+class Guide(DeclarativeBase):
 
     def __repr__(self):
         return ('<Guide: label=%s>' % self.label).encode('utf-8')
@@ -29,7 +42,7 @@ class Guide(PageCollection):
     def __unicode__(self):
         return self.label
 
-class PoC(PageCollection):
+class PoC(DeclarativeBase):
 
     def __repr__(self):
         return ('<PoC: label=%s>' % self.label).encode('utf-8')
