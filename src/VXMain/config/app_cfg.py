@@ -17,7 +17,7 @@ from tg.configuration import AppConfig
 
 import VXMain
 from VXMain import model
-from VXMain.lib import app_globals, helpers 
+from VXMain.lib import app_globals, helpers
 
 base_config = AppConfig()
 base_config.renderers = []
@@ -36,13 +36,13 @@ base_config.renderers.append('genshi')
 
 #Configure the base SQLALchemy Setup
 base_config.use_sqlalchemy = True
-base_config.model = VXMain.model
-base_config.DBSession = VXMain.model.DBSession
+base_config.model = model
+base_config.DBSession = model.DBSession
 
 # Configure the authentication backend
 
 # YOU MUST CHANGE THIS VALUE IN PRODUCTION TO SECURE YOUR APP 
-base_config.sa_auth.cookie_secret = "ChangeME" 
+base_config.sa_auth.cookie_secret = "ChangeME42"
 
 base_config.auth_backend = 'sqlalchemy'
 base_config.sa_auth.dbsession = model.DBSession

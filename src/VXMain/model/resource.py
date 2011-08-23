@@ -5,9 +5,9 @@ Created on Jul 18, 2011
 '''
 
 
-from VXMain.model import DeclarativeBase, metadata
-from sqlalchemy import *
-from sqlalchemy.orm import mapper, relation, relationship, backref
+from VXMain.model import DeclarativeBase
+from sqlalchemy import Column, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, Unicode, DateTime, PickleType
 
 
