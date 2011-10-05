@@ -7,10 +7,13 @@ from VXMain.controllers.page import PageController
 from VXMain.controllers.project import ProjectController
 from VXMain.controllers.secure import SecureController
 from VXMain.lib.base import BaseController
-#from VXMain.model import DBSession
+from VXMain.model import DBSession
+from VXMain.model.page import Page
+from VXMain.model import DBSession
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
-#from repoze.what import predicates
+from repoze.what import predicates
 from tg import expose, flash, require, url, request, redirect
+from tgext.tagging import TaggingController
 
 __all__ = ['RootController']
 
@@ -36,6 +39,7 @@ class RootController(BaseController):
     project = ProjectController()
     projects = project
     secc = SecureController()
+    PageTagging = TaggingController(model = Page, session = DBSession, allow_edit = None)
 
     @expose()
     def index(self):

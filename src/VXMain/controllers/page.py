@@ -7,7 +7,7 @@ Created on Jul 9, 2011
 from VXMain.lib.base import BaseController
 from VXMain.model import DBSession
 from VXMain.model.auth import User
-from VXMain.model.page import Page, Tag, Collection
+from VXMain.model.page import Page, Collection
 from VXMain.widgets.Forms import create_page_form, update_page_form, update_page_filler
 from datetime import datetime
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
@@ -20,6 +20,7 @@ from tg import expose, flash, require, url, request, redirect, tmpl_context, val
 from tgext.crud import CrudRestController
 from markdown import Markdown
 from genshi.core import Markup
+from tgext.tagging import TaggingController
 
 
 class RestPageController(CrudRestController):
@@ -50,6 +51,7 @@ class PageController(BaseController):
     """
 
     #rest = RestPageController()
+    tagging = TaggingController(model = Page, session = DBSession, allow_edit = predicates.has_permission('manager'))
 
     @expose()
     def index(self):
@@ -79,8 +81,9 @@ class PageController(BaseController):
         try:
             page = int(page)
         except ValueError:
-            if type(page) == str:
-                return self.get_by_name(unicode(page))
+            pass
+#            if type(page) == str:
+#                return self.get_by_name(unicode(page))
         return self._r(page)
 
     @expose()
@@ -138,9 +141,9 @@ class PageController(BaseController):
                 page.body = unicode(kw['body'])
             if kw['collection']:
                 page.collection = DBSession.query(Collection).get(kw['collection'])
-            if kw['tags']:
-                for I in kw['tags']:
-                    page.tags.append(DBSession.query(Tag).get(I))
+#            if kw['tags']:
+#                for I in kw['tags']:
+#                    page.tags.append(DBSession.query(Tag).get(I))
             try:
                 DBSession.add(page)
                 DBSession.flush()
@@ -168,9 +171,9 @@ class PageController(BaseController):
                 page.body = unicode(kw['body'])
             if kw['collection']:
                 page.collection = DBSession.query(Collection).get(kw['collection'])
-            if kw['tags']:
-                for I in kw['tags']:
-                    page.tags.append(DBSession.query(Tag).get(I))
+#            if kw['tags']:
+#                for I in kw['tags']:
+#                    page.tags.append(DBSession.query(Tag).get(I))
             page.updated = datetime.now()
             DBSession.flush()
         redirect(url('/page/' + page.name))
