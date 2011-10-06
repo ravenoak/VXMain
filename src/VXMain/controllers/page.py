@@ -81,9 +81,8 @@ class PageController(BaseController):
         try:
             page = int(page)
         except ValueError:
-            pass
-#            if type(page) == str:
-#                return self.get_by_name(unicode(page))
+            if type(page) == str:
+                return self.get_by_name(unicode(page))
         return self._r(page)
 
     @expose()
@@ -91,7 +90,7 @@ class PageController(BaseController):
         redirect(url('/page/get'))
 
     @expose('VXMain.templates.page.read')
-    def getByName(self, name):
+    def get_by_name(self, name):
         try:
             page = DBSession.query(Page).filter_by(name = unicode(name)).one()
         except NoResultFound:
