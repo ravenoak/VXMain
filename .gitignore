@@ -3,4 +3,4 @@
 .settings/
 *.pyc
 *.pyo
-src/devdata.db
+devdata.db
