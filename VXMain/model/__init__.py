@@ -59,11 +59,11 @@ def init_model(engine):
 
 
 # Import your model modules here.
-#from VXMain.model.audit import *
 from VXMain.model.auth import *
+from VXMain.model.primitives import *
 from VXMain.model.page import *
 from VXMain.model.project import *
-from VXMain.model.resource import *
 
-import tgext.tagging
-Tag, Tagging = tgext.tagging.setup_model()
+
+#import tgext.tagging
+#Tag, Tagging = tgext.tagging.setup_model()

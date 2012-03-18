@@ -5,39 +5,29 @@ Created on Jun 9, 2011
 '''
 
 from VXMain.model import DeclarativeBase, metadata
-from VXMain.model.page import Collection as PageCollection
-from VXMain.model.resource import Resource
-#from VXMain.model import Tag
+from VXMain.model import Collection, Resource, Page
 from sqlalchemy import Column, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Integer, Unicode
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
-#ProjectPageCollections = Table('project_page_collections', metadata,
-#    Column('project_id', Integer, ForeignKey('projects.id')),
-#    Column('tag_id', Integer, ForeignKey('tags.id'))
-#)
-#
-#ProjectResources = Table('project_tags', metadata,
-#    Column('project_id', Integer, ForeignKey('projects.id')),
-#    Column('tag_id', Integer, ForeignKey('tags.id'))
-#)
-
-class Project(DeclarativeBase):
+class Project(Collection):
     __tablename__ = "projects"
+#    __mapper_args__ = {'polymorphic_identity': 'project',
+#                       }
+    id = Column(None, ForeignKey('collections.id'), primary_key = True)
 
-    id = Column(Integer, primary_key = True)
-    label = Column(Unicode(64), nullable = False)
-#    page_collections = relationship(PageCollection,
-#                                    secondary = ProjectPageCollections,
-#                                    backref = "projects")
-#    tags = None
-#    resources = relationship(Resource,
-#                    secondary = ProjectResources,
-#                    backref = "projects")
+    def __init__(self, *args, **kwargs):
+        super(Collection, self).__init__(*args, **kwargs)
 
-    def __repr__(self):
-        return ('<Project: label=%s>' % self.label).encode('utf-8')
 
-    def __unicode__(self):
-        return self.label
+class Guide(Collection):
+    __tablename__ = "guides"
+#    __mapper_args__ = {'polymorphic_identity': 'guide',
+#                       }
+    id = Column(None, ForeignKey('collections.id'), primary_key = True)
+
+    def __init__(self, *args, **kwargs):
+        super(Collection, self).__init__(*args, **kwargs)
+

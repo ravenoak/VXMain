@@ -17,7 +17,7 @@
 		<h1>All Pages</h1>
 		<ul>
 			<li py:for="page in pages"><a
-				href="${tg.url('/page/' + page.name)}" py:content="page.name">Page Name
+				href="${tg.url('/page/' + page.label)}" py:content="page.label">Page Label
 					Here.</a>
 			</li>
 		</ul>

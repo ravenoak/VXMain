@@ -8,17 +8,17 @@
 
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
-  <title>Editing ${pageName}</title>
+  <title>Editing ${page_label}</title>
 </head>
 
 <body>
-	<div py:if="pageRole == 'c'">
+	<div py:if="page_role == 'c'">
 		<h1>New Page</h1>
-		${tmpl_context.createPageForm(action = '/page/_c', value = value)}
+		${tmpl_context.create_page_form(action = '/page/_c', value = value)}
 	</div>
-	<div py:if="pageRole == 'u'">
-		<h1>You are now editing: <span>${pageName}</span></h1>
-		${tmpl_context.updatePageForm(action = '/page/_u', value = value)}
+	<div py:if="page_role == 'u'">
+		<h1>You are now editing: <span>${page_label}</span></h1>
+		${tmpl_context.update_page_form(action = '/page/_u', value = value)}
 	</div>
 </body>
 </html>

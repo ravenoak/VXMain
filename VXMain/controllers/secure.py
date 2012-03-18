@@ -16,8 +16,8 @@ class SecureController(BaseController):
     """Sample controller-wide authorization"""
     
     # The predicate that must be met for all the actions in this controller:
-    allow_only = has_permission('manage',
-                                msg=l_('Only for people with the "manage" permission'))
+    allow_only = has_permission('administrators',
+                                msg=l_('Only for people with the "administrators" permission'))
     
     @expose('VXMain.templates.index')
     def index(self):
