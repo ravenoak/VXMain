@@ -7,7 +7,7 @@ Created on Jul 9, 2011
 from VXMain.lib.base import BaseController
 from VXMain.model import DBSession
 from VXMain.model.auth import User
-from VXMain.model.page import Page, Collection
+from VXMain.model.primitives import Page
 from VXMain.widgets.Forms import create_page_form, update_page_form, update_page_filler
 from datetime import datetime
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
@@ -137,11 +137,6 @@ class PageController(BaseController):
                 page.title = unicode(kw['title'])
             if kw['body']:
                 page.body = unicode(kw['body'])
-            if kw['collection']:
-                page.collection = DBSession.query(Collection).get(kw['collection'])
-#            if kw['tags']:
-#                for I in kw['tags']:
-#                    page.tags.append(DBSession.query(Tag).get(I))
             try:
                 DBSession.add(page)
                 DBSession.flush()

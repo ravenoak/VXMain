@@ -9,6 +9,7 @@ from datetime import datetime
 from VXMain import model
 import transaction
 import uuid
+from PIL import Image
 
 # why is it wanting command, conf...vars?!?!
 def bootstrap(command, conf, vars):
@@ -48,10 +49,22 @@ def bootstrap(command, conf, vars):
     contactPage.body = u'...' + unicode(adminU.email_address)
     #contactPage.author = adminU
 
+    img = Image.open('078ee2af3097a206.jpg')
+    imgraw = file('078ee2af3097a206.jpg', 'rb')
+    testImage = model.Image(label = u'Lotus')
+    testImage.data = imgraw.read()
+    testImage.mode = img.mode
+    testImage.sizex, testImage.sizey = img.size
+    testImage.encoding = img.format
+
     somePage = model.Page(u'SomePage')
     somePage.title = u'VirtualXistenz: Where digital dreams come alive'
     somePage.body = u'*Welcome and HelloWorld!*\n\nBlah Blah'
     #somePage.author = adminU
+    somePage.resources.append(testImage)
+
+
+
 
     try:
         model.DBSession.add(adminG)
@@ -62,6 +75,7 @@ def bootstrap(command, conf, vars):
         model.DBSession.add(testGuide)
         model.DBSession.add(aboutPage)
         model.DBSession.add(contactPage)
+        model.DBSession.add(testImage)
         model.DBSession.add(somePage)
         model.DBSession.flush()
         transaction.commit()

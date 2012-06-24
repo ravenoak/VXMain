@@ -71,7 +71,7 @@ class Versioned(object):
 class Resource(DeclarativeBase):
     __tablename__ = "resources"
     id = Column(Integer, primary_key = True)
-    rtype = Column(String(50))
+    rtype = Column(String(50), nullable = False)
     label = Column(Unicode(64), nullable = False)
 
     def __init__(self, label, *args, **kwargs):
@@ -127,9 +127,14 @@ class Page(Collection):
 
 
 class Image(Resource):
-    __tablename__ = "collections"
+    __tablename__ = "images"
     id = Column(None, ForeignKey('resources.id'), primary_key = True)
-    image = Column()
+    data = Column(LargeBinary, nullable = False)
+    sizex = Column(Integer, nullable = False)
+    sizey = Column(Integer, nullable = False)
+    mode = Column(Unicode(10), nullable = False)
+    encoding = Column(Unicode(10), nullable = False)
 
     def __init__(self, *args, **kwargs):
+        # Lastly
         super(Resource, self).__init__(*args, **kwargs)

@@ -3,6 +3,7 @@
 
 from VXMain.controllers.admin import adminController
 from VXMain.controllers.error import ErrorController
+from VXMain.controllers.image import ImageController
 from VXMain.controllers.page import PageController
 from VXMain.controllers.project import ProjectController
 from VXMain.controllers.secure import SecureController
@@ -30,6 +31,8 @@ class RootController(BaseController):
     """
     admin = adminController
     error = ErrorController()
+    image = ImageController()
+    images = image
     page = PageController()
     pages = page
     project = ProjectController()
