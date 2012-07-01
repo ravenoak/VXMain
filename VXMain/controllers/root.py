@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from VXMain.controllers.admin import adminController
+from VXMain.controllers.admin import VXAdminController, VXAdminConfig
 from VXMain.controllers.error import ErrorController
 from VXMain.controllers.image import ImageController
 from VXMain.controllers.page import PageController
 from VXMain.controllers.project import ProjectController
 from VXMain.controllers.secure import SecureController
+from VXMain import model
+from VXMain.model import DBSession
 from VXMain.lib.base import BaseController
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
 from repoze.what import predicates
@@ -29,7 +31,7 @@ class RootController(BaseController):
     must be wrapped around with :class:`tg.controllers.WSGIAppController`.
 
     """
-    admin = adminController
+    admin = VXAdminController(model, DBSession, config_type = VXAdminConfig)
     error = ErrorController()
     image = ImageController()
     images = image

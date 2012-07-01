@@ -29,7 +29,7 @@ def bootstrap(command, conf, vars):
 
     adminP = model.Permission()
     adminP.permission_name = u'administrators'
-    adminP.description = u'This permission give an administrative right to the bearer'
+    adminP.description = u'This permission gives an administrative right to the bearer'
     adminP.groups.append(adminG)
 
     welcomePage = model.Page(u'Welcome')
