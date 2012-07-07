@@ -74,8 +74,8 @@ class Resource(DeclarativeBase):
     rtype = Column(String(50), nullable = False)
     label = Column(Unicode(64), nullable = False)
 
-    def __init__(self, label, *args, **kwargs):
-        self.label = label
+    def __init__(self, *args, **kwargs):
+        #self.label = label
         super(DeclarativeBase, self).__init__(*args, **kwargs)
 
     def __repr__(self):

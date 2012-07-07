@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Sample controller with all its actions protected."""
 from tg import expose, flash
-from pylons.i18n import ugettext as _, lazy_ugettext as l_
+from tg.i18n import ugettext as _, lazy_ugettext as l_
 from repoze.what.predicates import has_permission
 #from dbsprockets.dbmechanic.frameworks.tg2 import DBMechanic
 #from dbsprockets.saprovider import SAProvider

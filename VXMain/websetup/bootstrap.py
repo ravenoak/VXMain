@@ -32,19 +32,19 @@ def bootstrap(command, conf, vars):
     adminP.description = u'This permission gives an administrative right to the bearer'
     adminP.groups.append(adminG)
 
-    welcomePage = model.Page(u'Welcome')
+    welcomePage = model.Page(label = u'Welcome')
     welcomePage.title = u'Welcome to VirtualXistenz: where digital dreams come alive'
     welcomePage.body = u'**Welcome and HelloWorld!**'
 
-    testProj = model.Project(u'Test Project')
-    testGuide = model.Guide(u'Test Guide')
+    testProj = model.Project(label = u'Test Project')
+    testGuide = model.Guide(label = u'Test Guide')
 
-    aboutPage = model.Page(u'About')
+    aboutPage = model.Page(label = u'About')
     aboutPage.title = u'VirtualXistenz: What this site is all about'
     aboutPage.body = u'**To Be...**\n\n*...Continued!*'
     #aboutPage.author = adminU
 
-    contactPage = model.Page(u'Contact')
+    contactPage = model.Page(label = u'Contact')
     contactPage.title = u'How to get a hold of us (me)'
     contactPage.body = u'...' + unicode(adminU.email_address)
     #contactPage.author = adminU
@@ -57,7 +57,7 @@ def bootstrap(command, conf, vars):
     testImage.sizex, testImage.sizey = img.size
     testImage.encoding = img.format
 
-    somePage = model.Page(u'SomePage')
+    somePage = model.Page(label = u'SomePage')
     somePage.title = u'VirtualXistenz: Where digital dreams come alive'
     somePage.body = u'*Welcome and HelloWorld!*\n\nBlah Blah'
     #somePage.author = adminU
