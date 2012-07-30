@@ -10,8 +10,9 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import Integer, Unicode, String, DateTime, LargeBinary
-from sqlalchemy.types import TypeDecorator, CHAR, PickleType
+from sqlalchemy.types import Integer, Unicode, String, LargeBinary
+from sqlalchemy.types import TypeDecorator, CHAR
+#from sqlalchemy.types import PickleType, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 

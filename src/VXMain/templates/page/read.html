@@ -13,7 +13,7 @@
 </head>
 
 <body id="page.id_${page.id}">
-	<div id="page.body" py:content="tmpl_context.markup(tmpl_context.markdown.convert(page.body))">
+	<div id="page.body" py:content="render(page.body)">
 		<p>Replaced</p>
 	</div>
 	<div id="info">
@@ -29,6 +29,5 @@
 <!-- 			</li> -->
 <!-- 		</ul> -->
 	</div>
-	<div><a href="/page/edit/${page.label}">Edit this page</a></div>
 </body>
 </html>
