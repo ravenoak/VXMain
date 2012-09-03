@@ -3,11 +3,10 @@
 
 # turbogears imports
 from tg import expose
-#from tg import redirect, validate, flash
 
-# third party imports
-#from pylons.i18n import ugettext as _
-#from repoze.what import predicates
+#from tg import redirect, validate, flash
+#from tg.i18n import ugettext as _
+#from tg import predicates
 
 # project specific imports
 from VXMain.lib.base import BaseController
@@ -16,7 +15,7 @@ from VXMain.lib.base import BaseController
 
 class SampleController(BaseController):
     #Uncomment this line if your controller requires an authenticated user
-    #allow_only = authorize.not_anonymous()
+    #allow_only = predicates.not_anonymous()
     
     @expose('VXMain.templates.index')
     def index(self):

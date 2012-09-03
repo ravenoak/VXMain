@@ -40,8 +40,8 @@ app_instance_uuid = ${app_instance_uuid}
 sqlalchemy.url = sqlite:///%(here)s/somedb.db
 sqlalchemy.echo = False
 
-# This line ensures that Genshi will render xhtml when sending the                                                                                                                                                   
-# output. Change to html or xml, as desired.                                                                                                                                                                         
+# This line ensures that Genshi will render xhtml when sending the
+# output. Change to html or xml, as desired.
 templating.genshi.method = xhtml
 
 # WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
@@ -81,9 +81,8 @@ qualname = sqlalchemy.engine
 # "level = DEBUG" logs SQL queries and results.
 # "level = WARN" logs neither.  (Recommended for production systems.)
 
-
-# A logger for authentication, identification and authorization -- this is
-# repoze.who and repoze.what:
+# A logger for authentication, identification and authorization
+# This is repoze.who:
 [logger_auth]
 level = WARN
 handlers =

@@ -14,10 +14,9 @@ from nose.tools import eq_
 from VXMain import model
 
 __all__ = ['setup_db', 'teardown_db', 'TestController', 'url_for']
-
 def setup_db():
     """Method used to build a database"""
-    engine = config['pylons.app_globals'].sa_engine 
+    engine = config['pylons.app_globals'].sa_engine
     model.init_model(engine)
     model.metadata.create_all(engine)
 
@@ -25,7 +24,6 @@ def teardown_db():
     """Method used to destroy a database"""
     engine = config['pylons.app_globals'].sa_engine
     model.metadata.drop_all(engine)
-
 
 class TestController(object):
     """
@@ -57,8 +55,9 @@ class TestController(object):
         test_file = path.join(conf_dir, 'test.ini')
         cmd = SetupCommand('setup-app')
         cmd.run([test_file])
-    
+
     def tearDown(self):
         """Method called by nose after running each test"""
         # Cleaning up the database:
+        model.DBSession.remove()
         teardown_db()

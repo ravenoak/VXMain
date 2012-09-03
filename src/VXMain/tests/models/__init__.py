@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Unit test suite for the models of the application."""
 from nose.tools import assert_equals
-
 from VXMain.model import DBSession
 from VXMain.tests import setup_db, teardown_db
 
