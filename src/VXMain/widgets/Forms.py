@@ -6,7 +6,7 @@ Created on Jul 10, 2011
 
 from sprox.formbase import EditableForm
 from sprox.fillerbase import EditFormFiller
-from tw.forms import TextField, CheckBox, HiddenField
+from tw2.forms import TextField, CheckBox, HiddenField
 from VXMain.model import DBSession, Page, Project
 
 class PageForm(EditableForm):

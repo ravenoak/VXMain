@@ -10,8 +10,9 @@ from VXMain.controllers.secure import SecureController
 from VXMain import model
 from VXMain.model import DBSession
 from VXMain.lib.base import BaseController
-from pylons.i18n import ugettext as _, lazy_ugettext as l_
-from repoze.what import predicates
+#from pylons.i18n import ugettext as _, lazy_ugettext as l_
+from tg.i18n import ugettext as _
+#from repoze.what import predicates
 from tg import expose, flash, require, url, request, redirect
 
 __all__ = ['RootController']

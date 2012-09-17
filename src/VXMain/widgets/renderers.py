@@ -4,7 +4,7 @@ Created on Jul 12, 2012
 @author: ravenoak
 '''
 
-from tw.api import Link
+from tw2.core import Link
 from markdown import markdown
 from genshi.core import Markup
 import re

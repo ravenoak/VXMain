@@ -20,7 +20,7 @@ from sprox.formbase import AddRecordForm, EditableForm
 from sprox.widgets import PropertyMultipleSelectField
 from formencode import Schema
 from formencode.validators import FieldsMatch
-from tw.forms import PasswordField, TextField, MultipleSelectField
+from tw2.forms import PasswordField, TextField, MultipleSelectField
 
 
 class ResourceField(PropertyMultipleSelectField):
