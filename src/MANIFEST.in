@@ -1,4 +1,4 @@
-recursive-include VXMain/public *
-include VXMain/public/favicon.ico
-recursive-include VXMain/i18n *
-recursive-include VXMain/templates *
+recursive-include vxmain/public *
+include vxmain/public/favicon.ico
+recursive-include vxmain/i18n *
+recursive-include vxmain/templates *

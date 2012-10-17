@@ -1,12 +1,12 @@
-This file is for you to describe the VXMain application. Typically
+This file is for you to describe the vxmain application. Typically
 you would include information such as the information below:
 
 Installation and Setup
 ======================
 
-Install ``VXMain`` using the setup.py script::
+Install ``vxmain`` using the setup.py script::
 
-    $ cd VXMain
+    $ cd vxmain
     $ python setup.py install
 
 Create the project database for any model classes defined::
