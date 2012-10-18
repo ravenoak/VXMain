@@ -60,3 +60,6 @@ def init_model(engine):
 
 # Import your model modules here.
 from vxmain.model.auth import User, Group, Permission
+from vxmain.model.primitives import *
+from vxmain.model.project import *
+

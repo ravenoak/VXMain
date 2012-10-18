@@ -15,7 +15,7 @@ class PageForm(EditableForm):
         'id', 'author_id', 'updated', 'created', 'author',
     ]
     __dropdown_field_names__ = ['label', ]
-    #__dropdown_field_names__ = {'tags': 'label', 'resources': 'label', 'collection': 'label'}
+    __dropdown_field_names__ = {'tags': 'label', 'resources': 'label', 'collection': 'label'}
     __require_fields__ = ['confirmed', ]
     title = TextField('title', size = 64, maxlength = 128)
     confirmed = CheckBox('confirmed')

@@ -75,9 +75,9 @@ class Resource(DeclarativeBase):
     rtype = Column(String(50), nullable = False)
     label = Column(Unicode(64), nullable = False)
 
-    def __init__(self, *args, **kwargs):
-        #self.label = label
-        super(DeclarativeBase, self).__init__(*args, **kwargs)
+#    def __init__(self, *args, **kwargs):
+#        #self.label = label
+#        super(DeclarativeBase, self).__init__(*args, **kwargs)
 
     def __repr__(self):
         return ("<%s: '%s'>" % (self.__class__.__name__, self.label)).encode('utf-8')

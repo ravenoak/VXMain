@@ -3,6 +3,7 @@
 
 import logging
 from tg import config
+from PIL import Image
 from vxmain import model
 import transaction
 
