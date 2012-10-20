@@ -11,7 +11,6 @@ from vxmain.model.auth import User
 from vxmain.model.primitives import Image
 from datetime import datetime
 from pylons.i18n import ugettext as _, lazy_ugettext as l_
-from repoze.what import predicates
 from sprox.tablebase import TableBase
 from sqlalchemy.orm.exc import NoResultFound
 from tg import expose, flash, require, url, request, redirect, response, tmpl_context, validate

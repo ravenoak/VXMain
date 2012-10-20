@@ -9,7 +9,7 @@ Created on Jun 28, 2012
 from vxmain.model import DBSession
 from vxmain.model.auth import User, Group, Permission
 from vxmain.model.primitives import Page, Resource, Collection
-from repoze.what.predicates import has_permission
+from tg.predicates import has_permission
 from tgext.admin import AdminController, AdminConfig
 from tgext.admin.config import CrudRestControllerConfig
 from sprox.tablebase import TableBase

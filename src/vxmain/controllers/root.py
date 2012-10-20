@@ -5,13 +5,17 @@ from tg import expose, flash, require, url, lurl, request, redirect, tmpl_contex
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from tg import predicates
 from vxmain import model
-from vxmain.controllers.secure import SecureController
-from vxmain.model import DBSession, metadata
-from tgext.admin.tgadminconfig import TGAdminConfig
-from tgext.admin.controller import AdminController
-
 from vxmain.lib.base import BaseController
 from vxmain.controllers.error import ErrorController
+from vxmain.controllers.image import ImageController
+from vxmain.controllers.page import PageController
+from vxmain.controllers.project import ProjectController
+from vxmain.controllers.secure import SecureController
+from vxmain.controllers.admin import VXAdminController, VXAdminConfig
+from vxmain.model import DBSession, metadata
+#from tgext.admin.tgadminconfig import TGAdminConfig
+#from tgext.admin.controller import AdminController
+
 
 __all__ = ['RootController']
 
@@ -30,23 +34,46 @@ class RootController(BaseController):
     must be wrapped around with :class:`tg.controllers.WSGIAppController`.
 
     """
-    secc = SecureController()
-    admin = AdminController(model, DBSession, config_type=TGAdminConfig)
-
+    
+    #admin = AdminController(model, DBSession, config_type=TGAdminConfig)
+    admin = VXAdminController(model, DBSession, config_type = VXAdminConfig)
     error = ErrorController()
+    image = ImageController()
+    images = image
+    page = PageController()
+    pages = page
+    project = ProjectController()
+    projects = project
+    secc = SecureController()
 
     def _before(self, *args, **kw):
         tmpl_context.project_name = "vxmain"
 
-    @expose('vxmain.templates.index')
+    @expose()
     def index(self):
         """Handle the front-page."""
-        return dict(page='index')
+        redirect(url('/page/Welcome'))
 
-    @expose('vxmain.templates.about')
+    @expose()
     def about(self):
         """Handle the 'about' page."""
-        return dict(page='about')
+        redirect(url('/page/About'))
+
+    @expose()
+    def contact(self):
+        """Handle the 'contact' page."""
+        redirect(url('/page/Contact'))
+
+
+#    @expose('vxmain.templates.index')
+#    def index(self):
+#        """Handle the front-page."""
+#        return dict(page='index')
+#
+#    @expose('vxmain.templates.about')
+#    def about(self):
+#        """Handle the 'about' page."""
+#        return dict(page='about')
 
     @expose('vxmain.templates.environ')
     def environ(self):
