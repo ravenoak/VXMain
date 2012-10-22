@@ -9,7 +9,6 @@ from vxmain.model import DBSession
 #from vxmain.model.auth import User
 from vxmain.model.primitives import Page
 #from vxmMain.widgets.forms import create_page_form, update_page_form, update_page_filler
-from vxmain.widgets.renderers import bodyMarkup
 #from datetime import datetime
 #from pylons.i18n import ugettext as _, lazy_ugettext as l_
 #from repoze.what import predicates
@@ -17,7 +16,7 @@ from vxmain.widgets.renderers import bodyMarkup
 #from sprox.formbase import EditableForm, AddRecordForm
 #from sprox.tablebase import TableBase
 from sqlalchemy.orm.exc import NoResultFound
-from tg import expose, flash, require, url, request, redirect, tmpl_context, validate
+from tg import expose, flash, url, redirect
 #from tgext.crud import CrudRestController
 
 
@@ -52,8 +51,7 @@ class PageController(BaseController):
         except NoResultFound:
             flash(u'Page "%s" not found' % (label))
             redirect(url('/page/new/' + label))
-        render = bodyMarkup
-        return dict(page = page, render = render)
+        return dict(page = page)
 
     @expose()
     def list(self):
@@ -78,8 +76,7 @@ class PageController(BaseController):
     @expose()
     def _r(self, page_id):
         page = DBSession.query(Page).get(page_id)
-        render = bodyMarkup
-        return dict(page = page, render = render)
+        return dict(page = page)
 
     @expose('vxmain.templates.page.read')
     def _default(self, page):

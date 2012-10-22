@@ -23,21 +23,28 @@ class IconLink(Link):
         self.alt = kw.get('alt')
 
 
-def insertResource(text):
+class RenderMarkup(object):
     """
-    Do a regex?
     """
-    resourcePattern = re.compile(r'[?P<resource>(.*):(?P<label>.*)]')
-    #resourcePattern.
     
-    return text
+    def __init__(self):
+        pass
+    
+    def insertResource(self, text):
+        """
+        Do a regex?
+        """
+        resourcePattern = re.compile(r'[?P<resource>(.*):(?P<label>.*)]')
+        #resourcePattern.
+        return text
+    
+    def render(self, text, output_format='xhtml5'):
+        """
+        """
+        #return Markup(text)
+        return markdown(text, output_format='xhtml5')
+        #return Markup(self.insertResource(markdown(text, output_format='xhtml5')))
 
-
-def bodyMarkup(text):
-    """
-    Render the encoded body text as HTML
-    """
-    return Markup(insertResource(markdown(text, output_format='xhtml5')))
 
 
 

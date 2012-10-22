@@ -6,6 +6,7 @@ Created on Jul 18, 2011
 
 
 from vxmain.model import DeclarativeBase, metadata
+from vxmain.widgets.renderers import RenderMarkup
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Column, ForeignKey, Table
@@ -74,6 +75,7 @@ class Resource(DeclarativeBase):
     id = Column(Integer, primary_key = True)
     rtype = Column(String(50), nullable = False)
     label = Column(Unicode(64), nullable = False)
+    renderer = RenderMarkup()
 
 #    def __init__(self, *args, **kwargs):
 #        #self.label = label
@@ -95,6 +97,11 @@ class Resource(DeclarativeBase):
             }
         else:
             return {"polymorphic_identity": self.__name__}
+    
+    
+    def render(self, output_type='xhtml5'):
+        return self.renderer.render(self.body, output_type)
+
 
 
 class Collection(Resource):
@@ -125,6 +132,7 @@ class Page(Collection):
 
     def __init__(self, *args, **kwargs):
         super(Collection, self).__init__(*args, **kwargs)
+        
 
 
 class Image(Resource):

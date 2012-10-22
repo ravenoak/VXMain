@@ -41,6 +41,8 @@ install_requires=[
     "tgext.admin >= 0.5.1",
     "repoze.who.plugins.sa",
     "tw2.forms",
+    "markdown",
+    "PIL",
     ]
 
 setup(
