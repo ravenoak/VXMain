@@ -3,4 +3,5 @@
 .settings/
 *.pyc
 *.pyo
+*.bak
 devdata.db
