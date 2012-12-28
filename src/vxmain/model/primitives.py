@@ -7,6 +7,7 @@ Created on Jul 18, 2011
 
 from vxmain.model import DeclarativeBase, metadata
 from vxmain.lib.wiki.macros import Markup
+from genshi.builder import tag
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Column, ForeignKey, Table
@@ -18,12 +19,13 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 
-# From http://docs.sqlalchemy.org/en/latest/core/types.html
 class GUID(TypeDecorator):
     """Platform-independent GUID type.
 
     Uses Postgresql's UUID type, otherwise uses
     CHAR(32), storing as stringified hex values.
+    
+    Originally found at http://docs.sqlalchemy.org/en/latest/core/types.html
 
     """
     impl = CHAR
@@ -60,8 +62,9 @@ resource_collections = Table("resource_collections", metadata,
 )
 
 
-# This is a MixIn
 class Versioned(object):
+    """This is a MixIn Object. Add it to enable versioning on an SQLAlchemy Object
+    """
     atomic_number = Column(GUID, nullable = False)
     revision = Column(Integer, nullable = False)
 
@@ -75,11 +78,6 @@ class Resource(DeclarativeBase):
     id = Column(Integer, primary_key = True)
     rtype = Column(String(50), nullable = False)
     label = Column(Unicode(64), nullable = False)
-    renderer = Markup()
-
-#    def __init__(self, *args, **kwargs):
-#        #self.label = label
-#        super(DeclarativeBase, self).__init__(*args, **kwargs)
 
     def __repr__(self):
         return ("<%s: '%s'>" % (self.__class__.__name__, self.label)).encode('utf-8')
@@ -89,7 +87,8 @@ class Resource(DeclarativeBase):
 
     @declared_attr
     def __mapper_args__(self):
-        # in this case self really is cls
+        """in this case self really is cls
+        """
         if self.__name__ == 'Resource':
             return {
                     "polymorphic_on": self.rtype,
@@ -97,11 +96,6 @@ class Resource(DeclarativeBase):
             }
         else:
             return {"polymorphic_identity": self.__name__}
-    
-    
-    def render(self, output_type='xhtml5'):
-        return self.renderer.render(self.body, output_type)
-
 
 
 class Collection(Resource):
@@ -129,10 +123,13 @@ class Page(Collection):
     id = Column(None, ForeignKey('collections.id'), primary_key = True)
     title = Column(Unicode(255), nullable = False)
     body = Column(Unicode, nullable = False)
+    renderer = Markup()
 
     def __init__(self, *args, **kwargs):
         super(Collection, self).__init__(*args, **kwargs)
-        
+    
+    def render(self, output_type='xhtml5'):
+        return self.renderer.render(self.body, output_type)
 
 
 class Image(Resource):
@@ -145,5 +142,10 @@ class Image(Resource):
     encoding = Column(Unicode(10), nullable = False)
 
     def __init__(self, *args, **kwargs):
-        # Lastly
         super(Resource, self).__init__(*args, **kwargs)
+
+    def render(self, output_type='xhtml5'):
+        if output_type == 'raw':
+            return self.data
+        if output_type == 'xhtml5':
+            return tag.img(src="/image/{}".format(self.label))

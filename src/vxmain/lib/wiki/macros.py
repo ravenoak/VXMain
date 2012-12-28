@@ -27,6 +27,6 @@ class Markup(object):
     def render(self, text, output_format='xhtml5'):
         """
         """
-        #return Markup(text)
+        #return GenshiMarkup(text)
         return GenshiMarkup(markdown(text, output_format='xhtml5'))
-        #return Markup(self.insertResource(markdown(text, output_format='xhtml5')))
+        #return GenshiMarkup(self.insertResource(markdown(text, output_format='xhtml5')))
