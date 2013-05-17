@@ -44,7 +44,6 @@ class PageController(BaseController):
     def get_all(self):
         redirect(url('/page/get'))
 
-    @expose('vxmain.templates.page.read')
     def get_by_label(self, label):
         try:
             page = DBSession.query(Page).filter_by(label = unicode(label)).one()

@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:py="http://genshi.edgewall.org/"
 	xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -12,21 +13,21 @@
 </head>
 
 <body id="page.id_${page.id}">
-	<div id="page.body" py:content="page.render()">
-		<p>Replaced</p>
-	</div>
-	<div id="info">
-<!-- 		<p> -->
-<!-- 			<span id="page.author">Created by: ${page.author.display_name}</span> -->
-<!-- 		</p> -->
-<!-- 		<p id="datetime" class="datetime"> -->
-<!-- 			<span id="page.created">Created: ${page.created}</span> <span -->
-<!-- 				id="page.updated">Last Update: ${page.updated}</span> -->
-<!-- 		</p> -->
-<!-- 		<ul id="page.tags"> -->
-<!-- 			<li py:for="tag in page.tags"><span py:content="tag.label">Tag</span> -->
-<!-- 			</li> -->
-<!-- 		</ul> -->
-	</div>
+    <div id="page.body" py:content="page.render()">
+        <p>Replaced</p>
+    </div>
+    <div id="info">
+<!--        <p> -->
+<!--            <span id="page.author">Created by: ${page.author.display_name}</span> -->
+<!--        </p> -->
+<!--        <p id="datetime" class="datetime"> -->
+<!--            <span id="page.created">Created: ${page.created}</span> <span -->
+<!--                id="page.updated">Last Update: ${page.updated}</span> -->
+<!--        </p> -->
+<!--        <ul id="page.tags"> -->
+<!--            <li py:for="tag in page.tags"><span py:content="tag.label">Tag</span> -->
+<!--            </li> -->
+<!--        </ul> -->
+    </div>
 </body>
 </html>

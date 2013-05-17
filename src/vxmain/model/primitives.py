@@ -96,6 +96,9 @@ class Resource(DeclarativeBase):
             }
         else:
             return {"polymorphic_identity": self.__name__}
+    
+    def render(self):
+        pass
 
 
 class Collection(Resource):
