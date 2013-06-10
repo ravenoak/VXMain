@@ -6,7 +6,7 @@ Created on Jul 18, 2011
 
 
 from vxmain.model import DeclarativeBase, metadata
-from vxmain.lib.wiki.macros import Markup
+from vxmain.lib.wiki.macros import WikiMarkup
 from genshi.builder import tag
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
@@ -126,7 +126,7 @@ class Page(Collection):
     id = Column(None, ForeignKey('collections.id'), primary_key = True)
     title = Column(Unicode(255), nullable = False)
     body = Column(Unicode, nullable = False)
-    renderer = Markup()
+    renderer = WikiMarkup()
 
     def __init__(self, *args, **kwargs):
         super(Collection, self).__init__(*args, **kwargs)
