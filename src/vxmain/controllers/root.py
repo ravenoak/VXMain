@@ -85,6 +85,7 @@ class RootController(BaseController):
     def data(self, **kw):
         """This method showcases how you can use the same controller for a data page and a display page"""
         return dict(page='data', params=kw)
+    
     @expose('vxmain.templates.index')
     @require(predicates.has_permission('manage', msg=l_('Only for managers')))
     def manage_permission_only(self, **kw):

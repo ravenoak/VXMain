@@ -1,12 +1,16 @@
 import markdown
 import mdx_macros
-from vxmain.model import Image
+#from vxmain.model.primitives import Image
 
-class ImageMacro(mdx_macros.BaseMacro):
+class SummationMacro(mdx_macros.BaseMacro):
     """
+    A trivial macro that attempts to sum up a series of numbers.  Example
+    usage::
+    
+        [[Sum(4,6,2,9)]]
     """
-    name = "Image Macro"
-    key = "Image"
+    name = 'Summation macro'
+    key  = 'Sum'
     
     def handler(self, *args, **kwargs):
         total = 0
@@ -20,10 +24,20 @@ class ImageMacro(mdx_macros.BaseMacro):
             return "<span class='sum'>%s</span>" % total
         return "<div class='sum'>%s</div>" % total
 
+class ImageMacro(mdx_macros.BaseMacro):
+    """
+    [[Image(name)]]
+    """
+    name = "Image Macro"
+    key = "Image"
+    
+    def handler(self, name, html_class=''):
+        return "<img id=\"image_%s\" src='/image/%s' />" % (name, name)
+
 md = markdown.Markdown(
         extensions=['macros'],
         extension_configs={
             'macros': {
-                'macros': [ImageMacro]
+                'macros': [ImageMacro, SummationMacro]
                 }
         })
