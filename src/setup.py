@@ -3,7 +3,7 @@
 #
 # sqlalchemy: True
 # auth:       sqlalchemy
-# mako:       None
+# mako:       False
 #
 #
 
@@ -16,6 +16,7 @@ except:
     pass
 
 import sys
+py_version = sys.version_info[:2]
 
 try:
     from setuptools import setup, find_packages
@@ -27,55 +28,51 @@ except ImportError:
 testpkgs=['WebTest >= 1.2.3',
                'nose',
                'coverage',
-               'wsgiref',
+               'gearbox'
                ]
+
 install_requires=[
-    "TurboGears2 >= 2.2.2",
+    "TurboGears2 >= 2.3.1",
+    "Babel",
     "Genshi",
     "zope.sqlalchemy >= 0.4",
-    "repoze.tm2 >= 1.0a5",
     "sqlalchemy",
-    "sqlalchemy-migrate",
+    "alembic",
     "repoze.who",
-    "repoze.who-friendlyform >= 1.0.4",
-    "tgext.admin >= 0.5.1",
-    "repoze.who.plugins.sa",
     "tw2.forms",
-    "markdown",
-    "PIL",
+    "tgext.admin >= 0.5.1",
+    "Pillow >= 2.3.0",
+    "Markdown >= 2.3.1",
+    "markdown-macros >= 0.1.2",
     ]
 
 setup(
-    name='vxmain',
+    name='vxweb',
     version='0.1',
     description='',
     author='',
     author_email='',
     #url='',
-    setup_requires=["PasteScript >= 1.7"],
-    paster_plugins=['PasteScript', 'Pylons', 'TurboGears2', 'tg.devtools'],
     packages=find_packages(exclude=['ez_setup']),
     install_requires=install_requires,
     include_package_data=True,
     test_suite='nose.collector',
     tests_require=testpkgs,
-    package_data={'vxmain': ['i18n/*/LC_MESSAGES/*.mo',
+    package_data={'vxweb': ['i18n/*/LC_MESSAGES/*.mo',
                                  'templates/*/*',
                                  'public/*/*']},
-    message_extractors={'vxmain': [
+    message_extractors={'vxweb': [
             ('**.py', 'python', None),
             ('templates/**.html', 'genshi', None),
             ('public/**', 'ignore', None)]},
 
-    entry_points="""
-    [paste.app_factory]
-    main = vxmain.config.middleware:make_app
-
-    [paste.app_install]
-    main = pylons.util:PylonsInstaller
-    """,
-    dependency_links=[
-        "http://tg.gy/220"
+    entry_points={
+        'paste.app_factory': [
+            'main = vxweb.config.middleware:make_app'
         ],
+        'gearbox.plugins': [
+            'turbogears-devtools = tg.devtools'
+        ]
+    },
     zip_safe=False
 )
