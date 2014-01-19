@@ -31,8 +31,9 @@ class ImageMacro(mdx_macros.BaseMacro):
     name = "Image Macro"
     key = "Image"
     
-    def handler(self, name, html_class=''):
-        return "<img id=\"image_%s\" src='/image/%s' />" % (name, name)
+    def handler(self, name):
+        #return "<img id=\"image_{0}\" src=\"/image/{0}asdf\" />".format(name)
+        return "Name: {0}".format(name)
 
 md = markdown.Markdown(
         extensions=['macros'],

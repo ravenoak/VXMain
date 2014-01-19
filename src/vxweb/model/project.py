@@ -14,8 +14,8 @@ from sqlalchemy.ext.associationproxy import association_proxy
 
 class Project(Collection):
     __tablename__ = "projects"
-#    __mapper_args__ = {'polymorphic_identity': 'project',
-#                       }
+    __mapper_args__ = {'polymorphic_identity': 'Project',
+                       }
     id = Column(None, ForeignKey('collections.id'), primary_key = True)
 
     def __init__(self, *args, **kwargs):
@@ -24,8 +24,8 @@ class Project(Collection):
 
 class Guide(Collection):
     __tablename__ = "guides"
-#    __mapper_args__ = {'polymorphic_identity': 'guide',
-#                       }
+    __mapper_args__ = {'polymorphic_identity': 'Guide',
+                       }
     id = Column(None, ForeignKey('collections.id'), primary_key = True)
 
     def __init__(self, *args, **kwargs):

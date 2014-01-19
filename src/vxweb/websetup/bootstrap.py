@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Setup the vxweb application"""
 from __future__ import print_function
-from PIL import Image as PILImage
+from PIL import Image
 
 import logging
 from tg import config
@@ -55,13 +55,14 @@ def bootstrap(command, conf, vars):
         contactPage.body = u'...' + unicode(adminU.email_address)
         #contactPage.author = adminU
 
-        img = PILImage.open('078ee2af3097a206.jpg')
         imgraw = file('078ee2af3097a206.jpg', 'rb')
+        img = Image.open(imgraw)
         testImage = model.Image(label = u'Lotus')
-        testImage.data = imgraw.read()
-        testImage.mode = img.mode
+        #testImage.data = imgraw.read()
+        testImage.data = img.tobytes(img.format.lower(), img.mode)
+        testImage.mode = unicode(img.mode)
         testImage.sizex, testImage.sizey = img.size
-        testImage.encoding = img.format
+        testImage.encoding = unicode(img.format.lower())
 
         somePage = model.Page(label = u'SomePage')
         somePage.title = u'VirtualXistenz: Where digital dreams come alive'

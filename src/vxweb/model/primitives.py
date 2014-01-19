@@ -16,6 +16,7 @@ from sqlalchemy.types import Integer, Unicode, String, LargeBinary
 from sqlalchemy.types import TypeDecorator, CHAR
 #from sqlalchemy.types import PickleType, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from markupsafe import Markup
 import uuid
 
 
@@ -79,23 +80,18 @@ class Resource(DeclarativeBase):
     rtype = Column(String(50), nullable = False)
     label = Column(Unicode(64), nullable = False)
 
+    __mapper_args__ = {
+        'polymorphic_on':rtype,
+        'polymorphic_identity':'Resource',
+        'with_polymorphic':'*'
+    }
+
     def __repr__(self):
         return ("<%s: '%s'>" % (self.__class__.__name__, self.label)).encode('utf-8')
 
     def __unicode__(self):
         return self.label
 
-    @declared_attr
-    def __mapper_args__(self):
-        """in this case self really is cls
-        """
-        if self.__name__ == 'Resource':
-            return {
-                    "polymorphic_on": self.rtype,
-                    "polymorphic_identity": "Resource"
-            }
-        else:
-            return {"polymorphic_identity": self.__name__}
     
     def render(self):
         pass
@@ -107,6 +103,7 @@ class Collection(Resource):
     resources = relationship("Resource",
                     secondary = resource_collections,
                     backref = "collections")
+    __mapper_args__ = {'polymorphic_identity':'Collection'}
 
     def __init__(self, *args, **kwargs):
         super(Resource, self).__init__(*args, **kwargs)
@@ -119,6 +116,7 @@ class OrderedCollection(Collection):
                          backref = "ocollections",
                          collection_class = ordering_list('position'),
                          order_by = 'resource_collections.c.position')
+    __mapper_args__ = {'polymorphic_identity':'OrderedCollection'}
 
 
 class Page(Collection):
@@ -126,12 +124,13 @@ class Page(Collection):
     id = Column(None, ForeignKey('collections.id'), primary_key = True)
     title = Column(Unicode(255), nullable = False)
     body = Column(Unicode, nullable = False)
+    __mapper_args__ = {'polymorphic_identity':'Page'}
 
     def __init__(self, *args, **kwargs):
         super(Collection, self).__init__(*args, **kwargs)
     
     def render(self):
-        return md.convert(self.body)
+        return Markup(md.convert(self.body))
 
 
 class Image(Resource):
@@ -142,6 +141,7 @@ class Image(Resource):
     sizey = Column(Integer, nullable = False)
     mode = Column(Unicode(10), nullable = False)
     encoding = Column(Unicode(10), nullable = False)
+    __mapper_args__ = {'polymorphic_identity':'Image'}
 
     def __init__(self, *args, **kwargs):
         super(Resource, self).__init__(*args, **kwargs)

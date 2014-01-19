@@ -25,6 +25,6 @@ class ImageController(BaseController):
     @expose()
     def get(self, label):
         img = DBSession.query(Image).filter_by(label = unicode(label)).one()
-        response.headers['Content-type'] = 'image/' + img.encoding
-        #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + image.image.filename))
+        response.headers['Content-type'] = str(u'image/' + img.encoding.lower())
+        #response.headers['Content-Disposition'] =  'attachment;filename=' + img.label + img.encoding.lower()
         return img.data
