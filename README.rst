@@ -1,24 +1,24 @@
-This file is for you to describe the vxmain application. Typically
+This file is for you to describe the vxweb application. Typically
 you would include information such as the information below:
 
 Installation and Setup
 ======================
 
-Install ``vxmain`` using the setup.py script::
+Install ``vxweb`` using the setup.py script::
 
-    $ cd vxmain
-    $ python setup.py install
+    $ cd vxweb
+    $ python setup.py develop
 
 Create the project database for any model classes defined::
 
-    $ paster setup-app development.ini
+    $ gearbox setup-app
 
 Start the paste http server::
 
-    $ paster serve development.ini
+    $ gearbox serve
 
 While developing you may want the server to reload after changes in package files (or its dependencies) are saved. This can be achieved easily by adding the --reload option::
 
-    $ paster serve --reload development.ini
+    $ gearbox serve --reload --debug
 
 Then you are ready to go.

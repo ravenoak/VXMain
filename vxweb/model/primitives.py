@@ -1,14 +1,14 @@
-'''
+"""
 Created on Jul 18, 2011
 
 @author: caitlyn.ohanna@virtualxistenz.com
-'''
+"""
 
 
 from vxweb.model import DeclarativeBase, metadata
 from vxweb.lib.wiki import md
 from genshi.builder import tag
-from sqlalchemy.ext.declarative import declared_attr
+#from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import relationship
@@ -21,7 +21,8 @@ import uuid
 
 
 class GUID(TypeDecorator):
-    """Platform-independent GUID type.
+    """
+    Platform-independent GUID type.
 
     Uses Postgresql's UUID type, otherwise uses
     CHAR(32), storing as stringified hex values.
@@ -64,7 +65,8 @@ resource_collections = Table("resource_collections", metadata,
 
 
 class Versioned(object):
-    """This is a MixIn Object. Add it to enable versioning on an SQLAlchemy Object
+    """
+    This is a MixIn Object. Add it to enable versioning on a SQLAlchemy Object
     """
     atomic_number = Column(GUID, nullable = False)
     revision = Column(Integer, nullable = False)
