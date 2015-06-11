@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """Error controller"""
-
 from tg import request, expose
+from vxweb.lib.base import BaseController
 
 __all__ = ['ErrorController']
 
 
-class ErrorController(object):
+class ErrorController(BaseController):
     """
     Generates error documents as and when they are required.
 
@@ -15,13 +15,13 @@ class ErrorController(object):
 
     This behaviour can be altered by changing the parameters to the
     ErrorDocuments middleware in your config/middleware.py file.
-    
+
     """
 
     @expose('vxweb.templates.error')
     def document(self, *args, **kwargs):
         """Render the error document"""
-        resp = request.environ.get('pylons.original_response')
+        resp = request.environ.get('tg.original_response')
         default_message = ("<p>We're sorry but we weren't able to process "
                            " this request.</p>")
         values = dict(prefix=request.environ.get('SCRIPT_NAME', ''),

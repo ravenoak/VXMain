@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-
 """The base Controller API."""
 
 from tg import TGController, tmpl_context
-from tg.render import render
 from tg import request
-from tg.i18n import ugettext as _, ungettext
-import vxweb.model as model
+
 
 __all__ = ['BaseController']
 
@@ -27,4 +24,5 @@ class BaseController(TGController):
 
         request.identity = request.environ.get('repoze.who.identity')
         tmpl_context.identity = request.identity
+
         return TGController.__call__(self, environ, context)

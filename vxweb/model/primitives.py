@@ -4,9 +4,7 @@ Created on Jul 18, 2011
 @author: caitlyn.ohanna@virtualxistenz.com
 """
 
-
 from vxweb.model import DeclarativeBase, metadata
-from vxweb.lib.wiki import md
 from genshi.builder import tag
 #from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
@@ -16,7 +14,7 @@ from sqlalchemy.types import Integer, Unicode, String, LargeBinary
 from sqlalchemy.types import TypeDecorator, CHAR
 #from sqlalchemy.types import PickleType, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-from markupsafe import Markup
+#from markupsafe import Markup
 import uuid
 
 
@@ -58,9 +56,9 @@ class GUID(TypeDecorator):
 
 
 resource_collections = Table("resource_collections", metadata,
-    Column('collection_id', Integer, ForeignKey('collections.id')),
-    Column('resource_id', Integer, ForeignKey('resources.id')),
-    Column('position', Integer)
+                             Column('collection_id', Integer, ForeignKey('collections.id')),
+                             Column('resource_id', Integer, ForeignKey('resources.id')),
+                             Column('position', Integer)
 )
 
 
@@ -68,24 +66,24 @@ class Versioned(object):
     """
     This is a MixIn Object. Add it to enable versioning on a SQLAlchemy Object
     """
-    atomic_number = Column(GUID, nullable = False)
-    revision = Column(Integer, nullable = False)
+    atomic_number = Column(GUID, nullable=False)
+    revision = Column(Integer, nullable=False)
 
-    def __init__(self, revision = 0):
+    def __init__(self, revision=0):
         self.atomic_number = uuid.uuid4()
         self.revision = revision
 
 
 class Resource(DeclarativeBase):
     __tablename__ = "resources"
-    id = Column(Integer, primary_key = True)
-    rtype = Column(String(50), nullable = False)
-    label = Column(Unicode(64), nullable = False)
+    id = Column(Integer, primary_key=True)
+    rtype = Column(String(50), nullable=False)
+    label = Column(Unicode(64), nullable=False)
 
     __mapper_args__ = {
-        'polymorphic_on':rtype,
-        'polymorphic_identity':'Resource',
-        'with_polymorphic':'*'
+        'polymorphic_on': rtype,
+        'polymorphic_identity': 'Resource',
+        'with_polymorphic': '*'
     }
 
     def __repr__(self):
@@ -94,18 +92,18 @@ class Resource(DeclarativeBase):
     def __unicode__(self):
         return self.label
 
-    
+
     def render(self):
         pass
 
 
 class Collection(Resource):
     __tablename__ = "collections"
-    id = Column(None, ForeignKey('resources.id'), primary_key = True)
+    id = Column(None, ForeignKey('resources.id'), primary_key=True)
     resources = relationship("Resource",
-                    secondary = resource_collections,
-                    backref = "collections")
-    __mapper_args__ = {'polymorphic_identity':'Collection'}
+                             secondary=resource_collections,
+                             backref="collections")
+    __mapper_args__ = {'polymorphic_identity': 'Collection'}
 
     def __init__(self, *args, **kwargs):
         super(Resource, self).__init__(*args, **kwargs)
@@ -114,36 +112,36 @@ class Collection(Resource):
 class OrderedCollection(Collection):
     __tablename__ = None
     oresources = relationship("Resource",
-                         secondary = resource_collections,
-                         backref = "ocollections",
-                         collection_class = ordering_list('position'),
-                         order_by = 'resource_collections.c.position')
-    __mapper_args__ = {'polymorphic_identity':'OrderedCollection'}
+                              secondary=resource_collections,
+                              backref="ocollections",
+                              collection_class=ordering_list('position'),
+                              order_by='resource_collections.c.position')
+    __mapper_args__ = {'polymorphic_identity': 'OrderedCollection'}
 
 
 class Page(Collection):
     __tablename__ = "pages"
-    id = Column(None, ForeignKey('collections.id'), primary_key = True)
-    title = Column(Unicode(255), nullable = False)
-    body = Column(Unicode, nullable = False)
-    __mapper_args__ = {'polymorphic_identity':'Page'}
+    id = Column(None, ForeignKey('collections.id'), primary_key=True)
+    title = Column(Unicode(255), nullable=False)
+    body = Column(Unicode, nullable=False)
+    __mapper_args__ = {'polymorphic_identity': 'Page'}
 
     def __init__(self, *args, **kwargs):
         super(Collection, self).__init__(*args, **kwargs)
-    
+
     def render(self):
-        return Markup(md.convert(self.body))
+        raise NotImplementedError
 
 
 class Image(Resource):
     __tablename__ = "images"
-    id = Column(None, ForeignKey('resources.id'), primary_key = True)
-    data = Column(LargeBinary, nullable = False)
-    sizex = Column(Integer, nullable = False)
-    sizey = Column(Integer, nullable = False)
-    mode = Column(Unicode(10), nullable = False)
-    encoding = Column(Unicode(10), nullable = False)
-    __mapper_args__ = {'polymorphic_identity':'Image'}
+    id = Column(None, ForeignKey('resources.id'), primary_key=True)
+    data = Column(LargeBinary, nullable=False)
+    sizex = Column(Integer, nullable=False)
+    sizey = Column(Integer, nullable=False)
+    mode = Column(Unicode(10), nullable=False)
+    encoding = Column(Unicode(10), nullable=False)
+    __mapper_args__ = {'polymorphic_identity': 'Image'}
 
     def __init__(self, *args, **kwargs):
         super(Resource, self).__init__(*args, **kwargs)

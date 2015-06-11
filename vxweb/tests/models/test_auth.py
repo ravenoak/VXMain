@@ -6,23 +6,25 @@ from nose.tools import eq_
 from vxweb import model
 from vxweb.tests.models import ModelTest
 
+
 class TestGroup(ModelTest):
     """Unit test case for the ``Group`` model."""
+
     klass = model.Group
     attrs = dict(
-        group_name = "test_group",
-        display_name = "Test Group"
-        )
+        group_name="test_group",
+        display_name="Test Group"
+    )
 
 
 class TestUser(ModelTest):
     """Unit test case for the ``User`` model."""
-    
+
     klass = model.User
     attrs = dict(
-        user_name = "ignucius",
-        email_address = "ignucius@example.org"
-        )
+        user_name="ignucius",
+        email_address="ignucius@example.org"
+    )
 
     def test_obj_creation_username(self):
         """The obj constructor must set the user name right"""
@@ -44,9 +46,9 @@ class TestUser(ModelTest):
 
 class TestPermission(ModelTest):
     """Unit test case for the ``Permission`` model."""
-    
+
     klass = model.Permission
     attrs = dict(
-        permission_name = "test_permission",
-        description = "This is a test Description"
-        )
+        permission_name="test_permission",
+        description="This is a test Description"
+    )

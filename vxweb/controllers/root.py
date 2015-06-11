@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context
+from tg import expose, flash, require, url, lurl
+from tg import request, redirect, tmpl_context
 from tg.i18n import ugettext as _, lazy_ugettext as l_
+from tg.exceptions import HTTPFound
 from tg import predicates
 from vxweb import model
 from vxweb.controllers.error import ErrorController
@@ -11,8 +13,8 @@ from vxweb.controllers.page import PageController
 from vxweb.controllers.project import ProjectController
 from vxweb.controllers.secure import SecureController
 from vxweb.controllers.admin import VXAdminController, VXAdminConfig
-from vxweb.model import DBSession, metadata
-from tgext.admin.tgadminconfig import TGAdminConfig
+from vxweb.model import DBSession
+from tgext.admin.tgadminconfig import BootstrapTGAdminConfig as TGAdminConfig
 from tgext.admin.controller import AdminController
 
 from vxweb.lib.base import BaseController
@@ -34,6 +36,8 @@ class RootController(BaseController):
     must be wrapped around with :class:`tg.controllers.WSGIAppController`.
 
     """
+
+    #admin = AdminController(model, DBSession, config_type=TGAdminConfig)
     admin = VXAdminController(model, DBSession, config_type = VXAdminConfig)
     error = ErrorController()
     image = ImageController()
@@ -44,26 +48,8 @@ class RootController(BaseController):
     projects = project
     secc = SecureController()
 
-
     def _before(self, *args, **kw):
         tmpl_context.project_name = "vxweb"
-
-
-    # @expose()
-    # def index(self):
-    #     """Handle the front-page."""
-    #     redirect(url('/page/Welcome'))
-    #
-    # @expose()
-    # def about(self):
-    #     """Handle the 'about' page."""
-    #     redirect(url('/page/About'))
-    #
-    # @expose()
-    # def contact(self):
-    #     """Handle the 'contact' page."""
-    #     redirect(url('/page/Contact'))
-
 
     @expose('vxweb.templates.index')
     def index(self):
@@ -83,8 +69,12 @@ class RootController(BaseController):
     @expose('vxweb.templates.data')
     @expose('json')
     def data(self, **kw):
-        """This method showcases how you can use the same controller for a data page and a display page"""
+        """
+        This method showcases how you can use the same controller
+        for a data page and a display page.
+        """
         return dict(page='data', params=kw)
+
     @expose('vxweb.templates.index')
     @require(predicates.has_permission('manage', msg=l_('Only for managers')))
     def manage_permission_only(self, **kw):
@@ -98,13 +88,20 @@ class RootController(BaseController):
         return dict(page='editor stuff')
 
     @expose('vxweb.templates.login')
-    def login(self, came_from=lurl('/')):
+    def login(self, came_from=lurl('/'), failure=None, login=''):
         """Start the user login."""
+        if failure is not None:
+            if failure == 'user-not-found':
+                flash(_('User not found'), 'error')
+            elif failure == 'invalid-password':
+                flash(_('Invalid Password'), 'error')
+
         login_counter = request.environ.get('repoze.who.logins', 0)
-        if login_counter > 0:
+        if failure is None and login_counter > 0:
             flash(_('Wrong credentials'), 'warning')
+
         return dict(page='login', login_counter=str(login_counter),
-                    came_from=came_from)
+                    came_from=came_from, login=login)
 
     @expose()
     def post_login(self, came_from=lurl('/')):
@@ -116,10 +113,13 @@ class RootController(BaseController):
         if not request.identity:
             login_counter = request.environ.get('repoze.who.logins', 0) + 1
             redirect('/login',
-                params=dict(came_from=came_from, __logins=login_counter))
+                     params=dict(came_from=came_from, __logins=login_counter))
         userid = request.identity['repoze.who.userid']
         flash(_('Welcome back, %s!') % userid)
-        redirect(came_from)
+
+        # Do not use tg.redirect with tg.url as it will add the mountpoint
+        # of the application twice.
+        return HTTPFound(location=came_from)
 
     @expose()
     def post_logout(self, came_from=lurl('/')):
@@ -129,4 +129,4 @@ class RootController(BaseController):
 
         """
         flash(_('We hope to see you soon!'))
-        redirect(came_from)
+        return HTTPFound(location=came_from)
