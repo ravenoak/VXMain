@@ -12,6 +12,7 @@ from vxweb import model, lib
 
 base_config = AppConfig()
 base_config.renderers = []
+base_config.markup_types = []
 
 # True to prevent dispatcher from striping extensions
 # For example /socket.io would be served by "socket_io"
@@ -36,6 +37,12 @@ base_config.renderers.append('genshi')
 
 # Set the default renderer
 base_config.default_renderer = 'genshi'
+base_config['templating.genshi.method'] = 'html5'
+
+base_config.markup_types.append('markdown')
+
+base_config.default_markup_type = 'markdown'
+
 # Configure the base SQLALchemy Setup
 base_config.use_sqlalchemy = True
 base_config.model = vxweb.model
@@ -125,6 +132,7 @@ base_config.sa_auth.post_login_url = '/post_login'
 # You may optionally define a page where you want users to be redirected to
 # on logout:
 base_config.sa_auth.post_logout_url = '/post_logout'
+
 try:
     # Enable DebugBar if available, install tgext.debugbar to turn it on
     from tgext.debugbar import enable_debugbar

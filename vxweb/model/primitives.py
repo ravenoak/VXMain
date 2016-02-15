@@ -4,19 +4,23 @@ Created on Jul 18, 2011
 @author: caitlyn.ohanna@virtualxistenz.com
 """
 
-from vxweb.model import DeclarativeBase, metadata
+from abc import abstractmethod
+import uuid
+
 from genshi.builder import tag
-#from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import Integer, Unicode, String, LargeBinary
-from sqlalchemy.types import TypeDecorator, CHAR
-#from sqlalchemy.types import PickleType, DateTime
+from sqlalchemy.types import Integer, Unicode, String, LargeBinary, TypeDecorator, CHAR
 from sqlalchemy.dialects.postgresql import UUID
-#from markupsafe import Markup
-import uuid
 
+#
+from vxweb.model import DeclarativeBase, metadata
+
+from tg.configuration import AppConfig
+
+
+base_config = AppConfig()
 
 class GUID(TypeDecorator):
     """
@@ -58,19 +62,21 @@ class GUID(TypeDecorator):
 resource_collections = Table("resource_collections", metadata,
                              Column('collection_id', Integer, ForeignKey('collections.id')),
                              Column('resource_id', Integer, ForeignKey('resources.id')),
-                             Column('position', Integer)
-)
+                             Column('position', Integer), )
+
+# versions = Table("versions", metadata,
+#                  Column('', ))
 
 
 class Versioned(object):
     """
     This is a MixIn Object. Add it to enable versioning on a SQLAlchemy Object
     """
-    atomic_number = Column(GUID, nullable=False)
+    version_id = Column(GUID, nullable=False)
     revision = Column(Integer, nullable=False)
 
     def __init__(self, revision=0):
-        self.atomic_number = uuid.uuid4()
+        self.version_id = uuid.uuid4()
         self.revision = revision
 
 
@@ -92,7 +98,7 @@ class Resource(DeclarativeBase):
     def __unicode__(self):
         return self.label
 
-
+    @abstractmethod
     def render(self):
         pass
 
@@ -115,7 +121,7 @@ class OrderedCollection(Collection):
                               secondary=resource_collections,
                               backref="ocollections",
                               collection_class=ordering_list('position'),
-                              order_by='resource_collections.c.position')
+                              order_by='resource_collections.c.position', )
     __mapper_args__ = {'polymorphic_identity': 'OrderedCollection'}
 
 
@@ -124,6 +130,7 @@ class Page(Collection):
     id = Column(None, ForeignKey('collections.id'), primary_key=True)
     title = Column(Unicode(255), nullable=False)
     body = Column(Unicode, nullable=False)
+    markup_type = Column(Unicode(16), nullable=False, default=base_config.default_markup_type)
     __mapper_args__ = {'polymorphic_identity': 'Page'}
 
     def __init__(self, *args, **kwargs):

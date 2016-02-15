@@ -29,24 +29,26 @@ except ImportError:
 testpkgs = [
     'WebTest >= 1.2.3',
     'nose',
+    'mock',
     'coverage',
-    'gearbox'
+    'gearbox',
 ]
 
 install_requires = [
-    "TurboGears2 >= 2.3.5",
+    "TurboGears2 >= 2.3.7",
     "Babel",
-    "Genshi",
-    "zope.sqlalchemy >= 0.4",
-    "sqlalchemy",
+    "Genshi >= 0.7",
+    "zope.sqlalchemy >= 0.7.6",
+    "sqlalchemy >= 1.0.11",
     "alembic",
     "repoze.who",
     "tw2.forms",
     "tgext.admin >= 0.6.1",
+    "tgext.crud >= 0.8.1",
     "Pillow >= 2.3.0",
-    "Markdown >= 2.3.1",
+    "Markdown >= 2.6.5",
     "markdown-macros >= 0.1.2",
-    "docutils >= 0.11"
+    "docutils >= 0.13"
 ]
 
 setup(
